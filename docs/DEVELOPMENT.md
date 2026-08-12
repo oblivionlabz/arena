@@ -1,5 +1,15 @@
 # Development
 
+## Repository
+
+`github.com/oblivionlabz/arena`, public. **Decision made during `M0`** (not
+specified elsewhere in `docs/`): public because `docs/PRODUCT.md` frames this
+as a public demo/portfolio piece with no user accounts and nothing secret in
+the repo itself (`.env.example` ships blank, real values only ever live in
+Vercel's env store); `oblivionlabz` org to match where this operator's other
+public Vercel projects live, rather than a personal account. CI and PRs
+target this repo's default branch (`main`).
+
 ## Prerequisites
 
 - Node.js (current LTS), `pnpm` (or `npm` — pick one and stay consistent, don't

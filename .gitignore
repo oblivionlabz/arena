@@ -18,3 +18,8 @@ out/
 *.log
 coverage/
 *.tsbuildinfo
+
+# local agent/session state (not portable across machines)
+.claude/
+.vercel
+.env*

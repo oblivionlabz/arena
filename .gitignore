@@ -18,3 +18,5 @@ out/
 *.log
 coverage/
 *.tsbuildinfo
+.vercel
+.env*

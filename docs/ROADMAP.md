@@ -49,7 +49,12 @@ no UI needed yet to confirm this works.
   as a follow-up.
 
 **Exit criteria:** a visitor with no special access can see a live challenge
-resolve, browse the leaderboard, and submit a challenge idea.
+resolve, browse the leaderboard, and submit a challenge idea. Note from `M0`:
+the Vercel project has standard SSO Deployment Protection on by default
+(`all_except_custom_domains`), correct while there's no public-facing content
+yet — but it must be turned off for the production domain (or a custom domain
+attached, which bypasses it) before this exit criteria is actually true,
+otherwise every visitor hits a Vercel login wall instead of the site.
 
 ## M3 — Automation and distribution
 

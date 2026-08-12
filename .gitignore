@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+
+# vercel
+.vercel/
+
+# env
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.log
+coverage/

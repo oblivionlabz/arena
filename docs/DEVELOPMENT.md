@@ -107,8 +107,12 @@ catch it first.
 ## Deploying
 
 Preview deployments happen automatically on push (standard Vercel Git
-integration — confirm this is connected during `M0`, see ROADMAP). **Production
-deploys are a manual, human decision** — merge to the default branch triggers a
-production deploy per standard Vercel behavior; nothing in this repo's CI
-should attempt to promote or auto-merge to that branch on an agent's own
-authority.
+integration — confirm this is connected during `M0`, see ROADMAP). Merging
+a PR to the default branch triggers a production deploy per standard Vercel
+behavior. **Updated `M0` decision (2026-08-12, see `CLAUDE.md` rule 4):** the
+operator wants merging itself to be the agent's call once required checks are
+green, not a manual click — so this repo's production-deploy gate is "CI
+passed," not "a human pressed merge." The one thing that stays a hard human
+action per `CLAUDE.md` is production *promotion outside the normal merge
+flow* (`vercel promote`, `vercel --prod`) — never invoke those directly;
+production only ever happens as a side effect of a merged, CI-green PR.

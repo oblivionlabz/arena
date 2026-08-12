@@ -43,9 +43,19 @@ you notice something to fix there — note it instead (a PR comment, or
    commands (`lint`, `typecheck`, `vercel build`, and `test` once a suite
    exists). A red pipeline someone else catches costs more than one you catch
    yourself.
-4. **Never deploy to production, and never merge your own PR.** Production is
-   a human decision with a manual gate. Open the PR, describe what changed and
-   how you validated it, then stop.
+4. **Merging is the agent's call, gated on CI, not a manual human click.**
+   Operator decision 2026-08-12: the operator does not want to be in the
+   development pipeline, so once a PR's required checks are green
+   (`lint-and-typecheck`, and the Vercel preview-build check) and it doesn't
+   touch anything `docs/SECURITY.md` flags as needing a specific line-level
+   answer (Sandbox isolation, the public submission endpoint, credential
+   handling) without that answer being visibly present in the diff, merge it
+   yourself — don't leave a green, mergeable PR sitting idle waiting for a
+   click that was never coming. Still never force-merge over a *red* or
+   pending check, and still never silently skip a check that exists for a
+   reason (see rule 5). Merging to the default branch triggers an automatic
+   production deploy via Vercel's standard Git integration — that's an
+   accepted, known consequence of this policy, not a separate step to avoid.
 5. **Never bypass CI or a failing gate.** No `--no-verify`, no force-push over
    a failed run. If a gate is wrong, say so in the PR and leave it failing —
    don't route around it.
@@ -66,7 +76,9 @@ you notice something to fix there — note it instead (a PR comment, or
 ## Finishing a task
 
 Open a pull request against the default branch. State what changed, why, how
-you validated it, and anything you deliberately left alone. Then stop.
+you validated it, and anything you deliberately left alone. Once required
+checks are green, merge it per rule 4 — don't leave it open waiting on a
+human.
 
 If you can't finish, say so plainly and leave the branch in a state the next
 agent or a human can pick up cleanly. A partial, honest change is useful. A

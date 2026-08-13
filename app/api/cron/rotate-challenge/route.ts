@@ -3,13 +3,23 @@
 // 00:00 UTC; this file is what makes that actually do something instead of
 // 404ing. Fires the Workflow and returns immediately — the race itself runs
 // independently, durable, outside this request's lifetime.
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray, like, notInArray } from "drizzle-orm";
 import { start } from "workflow/api";
 
-import { challenges } from "@/db/schema";
+import { challenges, models } from "@/db/schema";
+import { chaosMode, pausedModelSlugs } from "@/flags";
 import { db } from "@/lib/db";
 import { setActiveChallenge, EdgeConfigNotConfigured } from "@/lib/ops/edge-config";
 import { benchmarkChallenge } from "@/lib/workflow";
+
+/**
+ * Reserved slug prefix for the pre-release QA challenge chaosMode selects
+ * instead of the normal queue — see flags.ts. Not auto-created here: seeding
+ * a fake adversarial challenge would be inventing test content this route
+ * has no business authoring. If none exists yet, chaos mode is a no-op that
+ * says so rather than silently falling back to a real challenge.
+ */
+const CHAOS_SLUG_PREFIX = "chaos-";
 
 export const dynamic = "force-dynamic";
 
@@ -53,15 +63,50 @@ export async function GET(request: Request) {
     );
   }
 
+  // docs/ARCHITECTURE.md's Flags: "which models are active in the day's
+  // rotation" — the flag is authoritative for `models.active` at rotation
+  // time, in both directions (pausing AND un-pausing), not just an
+  // additional filter layered on top of whatever the column already says.
+  // That's what makes it a real "flip it back without a deploy" control
+  // rather than one-way. lib/workflow/steps/db.ts's loadActiveModels() reads
+  // this same column unchanged — this is the one place that column gets
+  // written, so nothing inside `workflow/`'s files needed to change.
+  const paused = await pausedModelSlugs();
+  if (paused.length > 0) {
+    await database.update(models).set({ active: false }).where(inArray(models.slug, paused));
+    await database.update(models).set({ active: true }).where(notInArray(models.slug, paused));
+  } else {
+    await database.update(models).set({ active: true });
+  }
+
+  const chaos = await chaosMode();
+  let next: { id: string; slug: string } | undefined;
+  let chaosWarning: string | null = null;
+
+  if (chaos) {
+    [next] = await database
+      .select({ id: challenges.id, slug: challenges.slug })
+      .from(challenges)
+      .where(and(eq(challenges.status, "approved"), like(challenges.slug, `${CHAOS_SLUG_PREFIX}%`)))
+      .orderBy(asc(challenges.createdAt))
+      .limit(1);
+    if (!next) {
+      chaosWarning = `Chaos mode is on, but no approved challenge with a '${CHAOS_SLUG_PREFIX}' slug exists — falling back to the normal queue.`;
+      console.error(`rotate-challenge: ${chaosWarning}`);
+    }
+  }
+
   // Oldest-first among approved challenges. docs/WORKFLOWS.md leaves room for
   // an operator-pinned override later; no such column exists yet (M1 shipped
   // without one), so there's nothing to honor beyond FIFO today.
-  const [next] = await database
-    .select({ id: challenges.id, slug: challenges.slug })
-    .from(challenges)
-    .where(eq(challenges.status, "approved"))
-    .orderBy(asc(challenges.createdAt))
-    .limit(1);
+  if (!next) {
+    [next] = await database
+      .select({ id: challenges.id, slug: challenges.slug })
+      .from(challenges)
+      .where(eq(challenges.status, "approved"))
+      .orderBy(asc(challenges.createdAt))
+      .limit(1);
+  }
 
   if (!next) {
     return Response.json(
@@ -108,6 +153,7 @@ export async function GET(request: Request) {
       challengeSlug: next.slug,
       workflowRunId: run.runId,
       edgeConfigWarning,
+      chaosWarning,
     },
     { headers: NO_STORE },
   );

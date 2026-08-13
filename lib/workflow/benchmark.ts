@@ -9,6 +9,7 @@ import {
   loadActiveModels,
   loadChallenge,
 } from "@/lib/workflow/steps/db";
+import { postDigest } from "@/lib/workflow/steps/digest";
 import { callModel } from "@/lib/workflow/steps/model";
 import { runInSandbox } from "@/lib/workflow/steps/sandbox";
 import type {
@@ -105,9 +106,9 @@ export async function attemptModel(
 }
 
 /**
- * The benchmark cycle — docs/WORKFLOWS.md's `benchmarkChallenge`. Started with
- * `start(benchmarkChallenge, [challengeId])`; the Cron trigger that will call
- * it belongs to the `ops/` worktree (M3).
+ * The benchmark cycle — docs/WORKFLOWS.md's `benchmarkChallenge`. Started
+ * with `start(benchmarkChallenge, [challengeId])` — see
+ * app/api/cron/rotate-challenge/route.ts (`ops/`, M3) for the real trigger.
  */
 export async function benchmarkChallenge(challengeId: string) {
   "use workflow";
@@ -137,8 +138,12 @@ export async function benchmarkChallenge(challengeId: string) {
 
   await completeChallenge(challengeId);
 
-  // M3 (`ops/` worktree) hangs the OG scorecard and the Connect-mediated
-  // Discord digest off this point — docs/WORKFLOWS.md steps 5b and 5c.
+  // docs/WORKFLOWS.md step 5b: the OG scorecard isn't generated here — it's
+  // Next's on-demand next/og route at app/challenges/[slug]/opengraph-image,
+  // rendered when something actually requests it (the digest below is what
+  // requests it first, via the embed image URL it sends to Discord). Step
+  // 5c, the Discord digest itself, does need a real call at this point:
+  await postDigest(challengeId);
 
   return {
     challengeId,

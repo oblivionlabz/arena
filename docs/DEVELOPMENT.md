@@ -51,6 +51,13 @@ Config, Blob, Sandbox, Workflows, Connect) that `next dev` alone won't wire up
 correctly. `vercel dev` proxies these against your linked project's real
 (development-scoped) resources.
 
+Run `vercel dev` directly at the top level, not `pnpm dev`/`npm run dev` —
+`package.json`'s `dev` script is deliberately `next dev`, because `vercel dev`
+resolves the underlying framework command from that script to proxy it.
+Setting it to `vercel dev` creates a real, CLI-rejected recursion
+("`vercel dev` must not recursively invoke itself") — found and fixed
+2026-08-12, don't reintroduce it.
+
 ## Git worktree workflow — this repo is built with parallel agents
 
 Multiple agents may be working different areas of this codebase concurrently,

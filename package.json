@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "A live, multi-model coding benchmark. See README.md and docs/.",
   "scripts": {
-    "dev": "vercel dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

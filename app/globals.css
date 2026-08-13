@@ -93,12 +93,12 @@ body::before {
   background-image:
     radial-gradient(
       58rem 34rem at 50% 50%,
-      rgba(47, 123, 255, 0.22),
+      rgba(47, 123, 255, 0.28),
       transparent 64%
     ),
     radial-gradient(
       46rem 30rem at 50% 50%,
-      rgba(107, 164, 255, 0.1),
+      rgba(107, 164, 255, 0.14),
       transparent 70%
     ),
     linear-gradient(var(--line) 1px, transparent 1px),
@@ -114,9 +114,9 @@ body::before {
     0 0,
     0 0;
   background-repeat: no-repeat, no-repeat, repeat, repeat;
-  opacity: 0.55;
+  opacity: 0.65;
   mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 92%);
-  animation: atmosphere-drift 38s var(--ease-out-expo) infinite alternate;
+  animation: atmosphere-drift 28s var(--ease-out-expo) infinite alternate;
   transition: opacity 1.1s ease;
 }
 
@@ -126,7 +126,7 @@ body::before {
    the race ends or the page is left. Tied to real state, not a page-enter
    flourish. */
 html[data-race-live="true"] body::before {
-  opacity: 0.85;
+  opacity: 0.95;
 }
 
 @keyframes atmosphere-drift {
@@ -226,6 +226,37 @@ ol {
   backdrop-filter: blur(14px);
   background: color-mix(in srgb, var(--void) 82%, transparent);
   border-bottom: 1px solid var(--line);
+}
+
+/* A quiet scanline under the whole rail, on every page — the one piece of
+   chrome-level motion that doesn't wait for anything to be true. Distinct
+   mechanism (background-position on a wide, mostly-transparent gradient)
+   from the nav-link underlines so they read as two different things, not
+   competing effects in the same spot. */
+.siteRail::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 55%, transparent),
+    transparent
+  );
+  background-size: 32rem 100%;
+  background-repeat: no-repeat;
+  animation: rail-scan 9s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rail-scan {
+  from {
+    background-position: -32rem 0;
+  }
+  to {
+    background-position: 130% 0;
+  }
 }
 
 .siteRailInner {

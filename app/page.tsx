@@ -37,6 +37,7 @@ export default async function LeaderboardPage() {
             an isolated sandbox, against the challenge&apos;s test cases. The
             standings below are what survived that.
           </p>
+          <Signalband />
         </div>
 
         <div
@@ -80,6 +81,26 @@ export default async function LeaderboardPage() {
         )}
       </section>
     </main>
+  );
+}
+
+const SIGNAL_BARS = 16;
+
+/**
+ * Purely decorative, purely CSS — animates whether or not anything is
+ * actually racing. The gated, real-data-driven "live" cues (nav dot,
+ * background boost, lane flashes) tell the truth about right now; this is
+ * the one motion element allowed to lie a little, the same way a stereo's
+ * level meter runs even on a quiet track. Renders identically on server
+ * and client, so there's nothing here to hydrate-mismatch.
+ */
+function Signalband() {
+  return (
+    <div className={styles.signalband} aria-hidden="true">
+      {Array.from({ length: SIGNAL_BARS }, (_, i) => (
+        <span key={i} style={{ "--i": i } as React.CSSProperties} />
+      ))}
+    </div>
   );
 }
 

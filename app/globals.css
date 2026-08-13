@@ -1,9 +1,59 @@
+/* Arena — public site design tokens and chrome.
+   Direction: dark instrument panel. One accent (electric blue) carries meaning
+   only — live, running, passed. Nothing decorative is ever accent-colored. */
+
 :root {
+  /* Surfaces: near-black base, three lifted planes. Never pure #000. */
   --void: #0a0b0d;
+  --surface-1: #101218;
+  --surface-2: #161922;
+  --surface-3: #1d212c;
+
+  /* Hairlines do the structural work; boxes and shadows stay quiet. */
+  --line: rgba(231, 234, 240, 0.07);
+  --line-strong: rgba(231, 234, 240, 0.16);
+
   --ink: #e7eaf0;
   --muted: #8890a0;
+  --dim: #59606f;
+
+  /* The single accent. Semantic: live / running / passed. */
   --accent: #2f7bff;
+  --accent-hot: #6ba4ff;
   --accent-dim: #17357a;
+  --accent-wash: rgba(47, 123, 255, 0.1);
+
+  /* Not a second accent — failure and infrastructure-error signals, kept
+     desaturated so they never compete with the accent for attention. */
+  --fail: #c05762;
+  --warn: #bf9153;
+
+  /* Deliberately non-uniform: tight inside components, generous between
+     sections. Uniform padding everywhere is what makes a page look templated. */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-12: 3rem;
+  --s-16: 4rem;
+  --s-24: 6rem;
+
+  --measure: 68ch;
+  --rail: 1180px;
+
+  --text-micro: 0.6875rem;
+  --text-small: 0.8125rem;
+  --text-body: 0.9375rem;
+  --text-lead: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
+  --text-title: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  /* Capped so the longest headline line still sets on one line inside the
+     masthead column — a monospace face at display size runs wide. */
+  --text-display: clamp(2.25rem, 1.1rem + 4.4vw, 4.75rem);
+  --text-numeral: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -22,8 +72,198 @@ body {
   font-family:
     ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas,
     monospace;
+  font-size: var(--text-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Atmosphere: one fixed layer, not texture sprinkled through the components.
+   A faint grid plus a single accent bloom anchored behind the masthead. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      58rem 34rem at 18% -6%,
+      rgba(47, 123, 255, 0.2),
+      transparent 64%
+    ),
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 4.5rem,
+    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 4.5rem 100%;
+  opacity: 0.55;
+  mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 92%);
 }
 
 a {
-  color: var(--accent);
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-hot);
+  outline-offset: 3px;
+}
+
+/* ── Shared primitives ─────────────────────────────────────────────────── */
+
+.shell {
+  width: 100%;
+  max-width: var(--rail);
+  margin: 0 auto;
+  padding-inline: clamp(var(--s-4), 4vw, var(--s-12));
+}
+
+/* Section labels: small, wide-tracked, the connective tissue of the layout.
+   These carry most of the "technical readout" character. */
+.eyebrow {
+  font-size: var(--text-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* ── Site chrome ───────────────────────────────────────────────────────── */
+
+.siteRail {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--void) 82%, transparent);
+  border-bottom: 1px solid var(--line);
+}
+
+.siteRailInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-6);
+  height: 3.25rem;
+}
+
+.wordmark {
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+}
+
+.siteNav {
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--s-4), 3vw, var(--s-8));
+  font-size: var(--text-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.siteNav a {
+  padding-block: var(--s-2);
+  border-bottom: 1px solid transparent;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.siteNav a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--line-strong);
+}
+
+.siteNav a.liveLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ink);
+}
+
+.siteNav a.liveLink:hover {
+  border-bottom-color: var(--accent);
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2.4s var(--ease-out-expo) infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(47, 123, 255, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(47, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 123, 255, 0);
+  }
+}
+
+.siteFoot {
+  margin-top: var(--s-24);
+  border-top: 1px solid var(--line);
+  padding-block: var(--s-6) var(--s-12);
+  color: var(--dim);
+  font-size: var(--text-micro);
+  letter-spacing: 0.08em;
+}
+
+.siteFootInner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-6);
+  justify-content: space-between;
+}
+
+/* ── Entrance motion ───────────────────────────────────────────────────── */
+
+/* Staggered by --i on the element. Clarifies reading order on first paint
+   rather than decorating; it plays once and is done. */
+.rise {
+  animation: rise 620ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

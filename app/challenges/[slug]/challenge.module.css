@@ -1,0 +1,281 @@
+.page {
+  padding-block: clamp(var(--s-8), 6vw, var(--s-16)) 0;
+}
+
+.back {
+  display: inline-block;
+  font-size: var(--text-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: color 140ms ease;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+.head {
+  display: grid;
+  gap: var(--s-4);
+  padding-block: var(--s-6) var(--s-8);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.title {
+  font-size: clamp(1.9rem, 1.1rem + 3.2vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.headRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3) var(--s-4);
+}
+
+/* Facts strip: dense, tabular, and deliberately not a row of identical cards. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) clamp(var(--s-6), 4vw, var(--s-12));
+  padding-top: var(--s-2);
+}
+
+.fact {
+  display: grid;
+  gap: 2px;
+}
+
+.factLabel {
+  font-size: var(--text-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.factValue {
+  font-size: var(--text-small);
+  color: var(--ink);
+}
+
+/* ── Body layout ───────────────────────────────────────────────────────── */
+
+.body {
+  display: grid;
+  gap: clamp(var(--s-8), 5vw, var(--s-16));
+  padding-top: clamp(var(--s-8), 5vw, var(--s-12));
+}
+
+@media (min-width: 64rem) {
+  .body {
+    grid-template-columns: minmax(0, 3fr) minmax(16rem, 1.15fr);
+    align-items: start;
+  }
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--line);
+}
+
+/* The prompt is the artifact everything else is measured against, so it gets
+   the page's only quoted, indented surface. */
+.prompt {
+  margin-top: var(--s-6);
+  padding: clamp(var(--s-4), 3vw, var(--s-8));
+  background: var(--surface-1);
+  border-left: 2px solid var(--accent);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--text-lead);
+  line-height: 1.6;
+}
+
+.aside {
+  display: grid;
+  gap: var(--s-8);
+}
+
+.card {
+  padding: var(--s-6);
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+}
+
+/* Explanatory copy, not a data readout — so it isn't a second identical box.
+   A rule and open space instead of a panel. */
+.note {
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--line-strong);
+}
+
+.cardValue {
+  font-size: var(--text-numeral);
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin-top: var(--s-3);
+}
+
+.cardNote {
+  margin-top: var(--s-4);
+  color: var(--muted);
+  font-size: var(--text-small);
+  line-height: 1.5;
+}
+
+/* Withheld test cases are stated plainly rather than hidden — the omission is
+   a rule of the race, so it's part of the story. */
+.withheld {
+  margin-top: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px dashed var(--line-strong);
+  color: var(--dim);
+  font-size: var(--text-small);
+  line-height: 1.5;
+}
+
+.cases {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+
+.case {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-3);
+  background: var(--surface-2);
+  border-left: 1px solid var(--line-strong);
+  font-size: var(--text-small);
+}
+
+.caseIo {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+/* ── Runs ──────────────────────────────────────────────────────────────── */
+
+.runs {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-6);
+}
+
+.run {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s-3) var(--s-4);
+  padding: var(--s-4) var(--s-6);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--line);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.run:hover {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+
+.run.passed {
+  border-left-color: var(--accent);
+}
+
+.run.failed {
+  border-left-color: var(--fail);
+}
+
+.run.error {
+  border-left-color: var(--warn);
+}
+
+.run.running {
+  border-left-color: var(--accent);
+}
+
+.runName {
+  font-size: var(--text-lead);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+.runSlug {
+  color: var(--dim);
+  font-size: var(--text-micro);
+  letter-spacing: 0.1em;
+}
+
+.runReadout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-3) var(--s-4);
+}
+
+/* Fixed tracks so the numbers line up down the column across every run. */
+@media (min-width: 46rem) {
+  .runReadout {
+    display: grid;
+    grid-template-columns: 5rem 7rem 9rem;
+    justify-items: end;
+    align-items: center;
+    gap: var(--s-6);
+  }
+}
+
+.runStat {
+  display: grid;
+  gap: 2px;
+  text-align: right;
+}
+
+.runStatLabel {
+  font-size: var(--text-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.runStatValue {
+  font-size: var(--text-small);
+}
+
+.runStatValue.hot {
+  color: var(--accent-hot);
+}
+
+.empty {
+  margin-top: var(--s-6);
+  padding: clamp(var(--s-6), 4vw, var(--s-12));
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--muted);
+  max-width: var(--measure);
+}
+
+.emptyTitle {
+  font-size: var(--text-lead);
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: var(--s-2);
+}

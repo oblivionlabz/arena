@@ -1,0 +1,231 @@
+.page {
+  padding-block: clamp(var(--s-12), 9vw, var(--s-16)) var(--s-24);
+  max-width: 52rem;
+}
+
+.head {
+  padding-bottom: clamp(var(--s-8), 6vw, var(--s-12));
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.title {
+  font-size: var(--text-title);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin-top: var(--s-3);
+}
+
+.thesis {
+  margin-top: var(--s-4);
+  max-width: var(--measure);
+  color: var(--muted);
+}
+
+/* ── Token gate ────────────────────────────────────────────────────────── */
+
+.tokenForm {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 24rem;
+  padding-top: clamp(var(--s-8), 6vw, var(--s-12));
+}
+
+.label {
+  font-size: var(--text-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface-1);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  padding: var(--s-3) var(--s-4);
+}
+
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.textarea {
+  font-family: inherit;
+  font-size: var(--text-small);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.error {
+  font-size: var(--text-small);
+  color: var(--fail);
+}
+
+/* ── Toolbar ───────────────────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-6);
+  padding-top: clamp(var(--s-8), 6vw, var(--s-12));
+  padding-bottom: var(--s-4);
+}
+
+.count {
+  font-size: var(--text-small);
+  color: var(--muted);
+}
+
+.toolbarActions {
+  display: flex;
+  gap: var(--s-3);
+}
+
+.empty {
+  padding: var(--s-8) 0;
+  color: var(--dim);
+}
+
+/* ── Queue ─────────────────────────────────────────────────────────────── */
+
+.queue {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.item {
+  padding: var(--s-6);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--line-strong);
+}
+
+.itemHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.itemTitle {
+  font-size: var(--text-lead);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.itemMeta {
+  margin-top: var(--s-1);
+  font-size: var(--text-micro);
+  color: var(--dim);
+}
+
+.slug {
+  font-size: var(--text-micro);
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+.itemPrompt {
+  margin-top: var(--s-3);
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+.itemActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+
+.approveForm {
+  display: grid;
+  gap: var(--s-2);
+  width: 100%;
+}
+
+.approveActions {
+  display: flex;
+  gap: var(--s-3);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+
+.submit {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: var(--text-small);
+  color: var(--void);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  padding: 0.6em 1.2em;
+  cursor: pointer;
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--accent-hot);
+  border-color: var(--accent-hot);
+}
+
+.submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.secondary {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  padding: 0.6em 1.1em;
+  cursor: pointer;
+}
+
+.secondary:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+.secondary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.reject {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: var(--text-small);
+  color: var(--fail);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--fail) 45%, transparent);
+  border-radius: 2px;
+  padding: 0.6em 1.2em;
+  cursor: pointer;
+}
+
+.reject:hover:not(:disabled) {
+  border-color: var(--fail);
+  background: color-mix(in srgb, var(--fail) 12%, transparent);
+}
+
+.reject:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

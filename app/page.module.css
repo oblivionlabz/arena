@@ -23,9 +23,10 @@
 
 .headline {
   position: relative;
+  font-family: var(--display-font);
   font-size: var(--text-display);
   line-height: 0.92;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.02em;
   font-weight: 700;
   margin-top: var(--s-4);
   padding-left: var(--s-6);
@@ -208,7 +209,7 @@
   background:
     radial-gradient(
       36rem 18rem at 0% 0%,
-      rgba(47, 123, 255, 0.09),
+      rgba(47, 219, 127, 0.09),
       transparent 70%
     ),
     var(--surface-2);
@@ -391,9 +392,10 @@
 }
 
 .emptyTitle {
+  font-family: var(--display-font);
   font-size: var(--text-title);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   line-height: 1.1;
   margin-top: var(--s-3);
 }

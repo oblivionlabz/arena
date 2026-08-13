@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS "runs_challenge_model_workflow_run_idx" ON "runs" USING btree ("challenge_id","model_id","workflow_run_id");

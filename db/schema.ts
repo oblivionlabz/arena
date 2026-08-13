@@ -9,6 +9,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -61,5 +62,16 @@ export const runs = pgTable(
   (table) => [
     index("runs_challenge_idx").on(table.challengeId),
     index("runs_model_idx").on(table.modelId),
+    // lib/workflow/steps/db.ts's createRun() does a select-then-insert to
+    // adopt an existing row across a replayed Workflow step; this constraint
+    // is what actually makes that safe under concurrent replay instead of
+    // just usually-safe. NULLs (a run created outside a Workflow run) aren't
+    // deduplicated by a unique index in Postgres, which is fine — that path
+    // doesn't have a workflowRunId to race on in the first place.
+    uniqueIndex("runs_challenge_model_workflow_run_idx").on(
+      table.challengeId,
+      table.modelId,
+      table.workflowRunId,
+    ),
   ],
 );

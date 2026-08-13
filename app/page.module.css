@@ -22,11 +22,26 @@
 }
 
 .headline {
+  position: relative;
   font-size: var(--text-display);
   line-height: 0.92;
   letter-spacing: -0.045em;
   font-weight: 700;
   margin-top: var(--s-4);
+  padding-left: var(--s-6);
+}
+
+/* A fixed edge, not a rule under the text — reads as "this claim is
+   instrumented," matching the readout/eyebrow vocabulary already used
+   everywhere else on the page. */
+.headline::before {
+  content: "";
+  position: absolute;
+  top: 0.1em;
+  bottom: 0.16em;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-hot), var(--accent) 60%, transparent);
 }
 
 /* Each phrase is its own block so the line break is a composition decision,
@@ -50,6 +65,46 @@
   color: var(--muted);
   font-size: var(--text-lead);
   line-height: 1.5;
+}
+
+/* A level-meter, not a chart — no axis, no numbers, nothing that reads as
+   data. Its only job is to make the hero feel instrumented and running
+   the instant the page paints, independent of whether a real challenge
+   happens to be active right now. */
+.signalband {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 26px;
+  margin-top: var(--s-8);
+  max-width: 22rem;
+}
+
+.signalband span {
+  flex: 1;
+  min-width: 2px;
+  max-width: 6px;
+  height: 100%;
+  border-radius: 1px;
+  background: linear-gradient(180deg, var(--accent-hot), var(--accent) 70%, transparent);
+  transform: scaleY(0.12);
+  transform-origin: bottom;
+  opacity: 0.7;
+  animation: signal-bar 2.6s var(--ease-out-expo) infinite;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes signal-bar {
+  0%,
+  100% {
+    transform: scaleY(0.12);
+  }
+  45% {
+    transform: scaleY(1);
+  }
+  60% {
+    transform: scaleY(0.35);
+  }
 }
 
 .readout {

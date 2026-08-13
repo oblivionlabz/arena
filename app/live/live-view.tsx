@@ -42,6 +42,19 @@ export function LiveView({
   const isCompleted = data.challenge?.status === "completed";
   const isRacing = data.active && !isCompleted;
 
+  // The one place this page reaches outside its own DOM subtree: a data
+  // attribute on <html>, read by globals.css to brighten the ambient
+  // background bloom while a race is actually running. Reverts on
+  // unmount/navigation and whenever isRacing flips, so leaving this page
+  // (or the race ending) always settles it back — see globals.css for the
+  // CSS side.
+  useEffect(() => {
+    document.documentElement.dataset.raceLive = isRacing ? "true" : "false";
+    return () => {
+      delete document.documentElement.dataset.raceLive;
+    };
+  }, [isRacing]);
+
   const load = useCallback(async () => {
     setFetching(true);
     try {

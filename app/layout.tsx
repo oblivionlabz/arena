@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { NavLiveIndicator } from "@/app/_components/nav-live-indicator";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,8 +30,7 @@ export default function RootLayout({
             <nav className="siteNav">
               <Link href="/">Standings</Link>
               <Link href="/live" className="liveLink">
-                <span className="pulseDot" aria-hidden="true" />
-                Live
+                <NavLiveIndicator />
               </Link>
               <Link href="/submit">Submit</Link>
             </nav>

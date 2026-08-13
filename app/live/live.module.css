@@ -345,6 +345,18 @@
   height: 3px;
   background: var(--surface-3);
   border-radius: 1px;
+  transition:
+    background 320ms var(--ease-out-expo),
+    transform 320ms var(--ease-out-expo);
+}
+
+/* A pip lighting up is a real event (an attempt just landed) — it gets a
+   small overshoot instead of a flat color snap, same "motion marks a real
+   state change" rule as .flash above. */
+.pip.used,
+.pip.usedHot,
+.pip.usedFail {
+  transform: scaleY(1.6);
 }
 
 .pip.used {

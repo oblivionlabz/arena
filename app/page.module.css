@@ -383,6 +383,16 @@
   background: var(--surface-1);
   border: 1px solid var(--line);
   border-left: 2px solid var(--line-strong);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms var(--ease-out-expo);
+}
+
+.gridRow:hover {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+  transform: translateX(2px);
 }
 
 .gridName {

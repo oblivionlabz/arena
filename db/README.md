@@ -27,3 +27,15 @@ pnpm db:generate   # after changing db/schema.ts, generates a new SQL migration
 vercel env pull .env.local   # get a real DATABASE_URL
 pnpm db:migrate    # applies pending migrations
 ```
+
+## Seeding
+
+`seed.ts` inserts one `models` row and one `approved` `challenges` row so a
+benchmark run has something real to execute against. Idempotent — re-running
+updates by slug rather than duplicating. Added by the `workflow/` worktree so
+`benchmarkChallenge()` could be triggered manually per `docs/ROADMAP.md`'s M1
+exit criteria.
+
+```bash
+pnpm db:seed       # prints the seeded model and challenge IDs
+```

@@ -204,6 +204,35 @@
   }
 }
 
+/* A literal moving track along the bottom edge — the sweep above is
+   ambient glow, this is the more literal "the race is in motion" cue.
+   Different mechanism (background-position, not transform) so the two
+   don't fight for the same GPU layer treatment. */
+.lane.running::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--accent) 0 10px,
+    transparent 10px 22px
+  );
+  background-size: 22px 100%;
+  animation: track-scroll 900ms linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@keyframes track-scroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 22px 0;
+  }
+}
+
 .lane.passed {
   border-left-color: var(--accent);
 }
@@ -225,10 +254,18 @@
 }
 
 .laneName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
   font-size: var(--text-lead);
   font-weight: 700;
   letter-spacing: -0.015em;
   overflow-wrap: anywhere;
+}
+
+.laneName .modelDot {
+  position: relative;
+  top: -0.14em;
 }
 
 .laneSlug {

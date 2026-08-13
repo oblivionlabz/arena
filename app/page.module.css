@@ -182,11 +182,21 @@
 }
 
 .leadName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
   font-size: var(--text-title);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.05;
   overflow-wrap: anywhere;
+}
+
+.leadName .modelDot,
+.chaseName .modelDot,
+.packName .modelDot {
+  position: relative;
+  top: -0.14em;
 }
 
 .leadMeta {
@@ -230,6 +240,9 @@
 }
 
 .chaseName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
   font-size: var(--text-lead);
   font-weight: 700;
   letter-spacing: -0.015em;
@@ -251,6 +264,9 @@
 }
 
 .packName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
   font-size: var(--text-body);
   overflow-wrap: anywhere;
 }
@@ -370,10 +386,18 @@
 }
 
 .gridName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
   font-size: var(--text-lead);
   font-weight: 700;
   letter-spacing: -0.015em;
   overflow-wrap: anywhere;
+}
+
+.gridName .modelDot {
+  position: relative;
+  top: -0.14em;
 }
 
 .gridSlug {

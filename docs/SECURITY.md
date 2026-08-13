@@ -74,6 +74,43 @@ Two separate untrusted inputs exist and must never be conflated:
   token is a timing side-channel; don't introduce one just because the stakes
   feel low for an admin-only moderation endpoint.
 
+## Pending and rejected challenges are invisible outside moderation
+
+A `pending` or `rejected` row never appears on any public surface — not just
+that it never reaches the Sandbox (the trust-boundary diagram above covers
+execution specifically; this is about visibility). Two different mechanisms
+enforce it, and a new public route has to preserve both:
+
+- `GET /api/challenges/[slug]` explicitly whitelists
+  `["approved", "active", "completed"]` — a pending or rejected slug 404s.
+- `GET /api/challenges/active` and the leaderboard don't filter by status at
+  all; they don't need to, because nothing ever *produces* a pending id for
+  them to look up. `rotate-challenge`'s cron only ever calls
+  `setActiveChallenge()` for a row it just confirmed is `status = 'approved'`
+  — Edge Config's `active_challenge_id` structurally can't point at a pending
+  challenge.
+
+`GET /api/internal/challenges/pending` exists specifically because nothing
+else in the app exposes a pending challenge's id — an operator otherwise has
+no way to discover what's waiting short of a direct DB query. When adding a
+new public query against `challenges`: either filter by status explicitly, or
+verify the id it operates on can only ever originate from an already-approved
+row. Don't assume "there's no UI link to it" is the boundary — that's
+`app/internal/moderate`'s page-level obscurity note taken out of context; the
+actual boundary is always the query or the id's provenance.
+
+## Submitted test cases are never trusted, even from the operator's own UI
+
+`POST /api/challenges/submit` always writes `test_cases: []`. A public
+submitter never gets to author the cases their own challenge is scored
+against — that would let anyone game their own leaderboard entry by writing
+trivial tests. Real test cases only enter the row through
+`POST /api/internal/challenges/[id]/moderate` (`action: "approve"`), supplied
+by the operator doing the approving, and validated against the same
+`testCasesSchema` that `lib/workflow/steps/db.ts`'s `loadChallenge()` checks
+again later — so a bad approval fails at the one point a human is actually
+looking at it, not mid-benchmark with a model already running.
+
 ## Test-case confidentiality while a challenge is active
 
 `GET /api/challenges/[slug]` must not return the actual `test_cases` content —

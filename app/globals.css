@@ -185,6 +185,19 @@ ol {
   padding-inline: clamp(var(--s-4), 4vw, var(--s-12));
 }
 
+/* A model's identity color (app/_lib/model-color.ts) — decorative only, set
+   inline per-instance via --model-color. Global because it shows up on both
+   the standings rows and the live lanes, two different CSS modules that
+   have no other reason to share a stylesheet. */
+.modelDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--model-color, var(--dim));
+  flex: none;
+}
+
 /* Section labels: small, wide-tracked, the connective tissue of the layout.
    These carry most of the "technical readout" character. */
 .eyebrow {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CountUp } from "@/app/_components/count-up";
 import { fetchLeaderboard, type LeaderboardModel } from "@/app/_lib/api";
 import { formatDuration, formatPercent } from "@/app/_lib/format";
+import { modelColor } from "@/app/_lib/model-color";
 
 import styles from "./page.module.css";
 
@@ -122,7 +123,13 @@ function LeadRow({ model }: { model: LeaderboardModel }) {
     <article className={`${styles.row} ${styles.lead}`}>
       <div className={styles.leadIdentity}>
         <p className={styles.leadRank}>Rank 01</p>
-        <h3 className={styles.leadName}>{model.displayName}</h3>
+        <h3 className={styles.leadName}>
+          <span
+            className="modelDot"
+            style={{ "--model-color": modelColor(model.slug) } as React.CSSProperties}
+          />
+          {model.displayName}
+        </h3>
         <p className={styles.leadMeta}>
           {model.slug} · {model.wins}/{model.totalRuns} solved
           {model.active ? "" : " · out of rotation"}
@@ -178,7 +185,13 @@ function ChaseRow({
     <article className={`${styles.row} ${styles[tier]}`}>
       <span className={styles.rank}>{rank.toString().padStart(2, "0")}</span>
       <div>
-        <h3 className={nameClass}>{model.displayName}</h3>
+        <h3 className={nameClass}>
+          <span
+            className="modelDot"
+            style={{ "--model-color": modelColor(model.slug) } as React.CSSProperties}
+          />
+          {model.displayName}
+        </h3>
         {!model.active && (
           <span className={styles.idleTag}>out of rotation</span>
         )}
@@ -237,7 +250,13 @@ function StartingGrid({ models }: { models: LeaderboardModel[] }) {
               style={{ "--i": index + 1 } as React.CSSProperties}
             >
               <div>
-                <h3 className={styles.gridName}>{model.displayName}</h3>
+                <h3 className={styles.gridName}>
+                  <span
+                    className="modelDot"
+                    style={{ "--model-color": modelColor(model.slug) } as React.CSSProperties}
+                  />
+                  {model.displayName}
+                </h3>
                 <p className={styles.gridSlug}>{model.slug}</p>
               </div>
               <span className={styles.idleTag}>

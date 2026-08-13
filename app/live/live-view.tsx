@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RunStatusChip } from "@/app/_components/status-chip";
 import type { ActiveChallenge } from "@/app/_lib/api";
 import { formatDuration, formatElapsed, formatUtc } from "@/app/_lib/format";
+import { modelColor } from "@/app/_lib/model-color";
 
 import styles from "./live.module.css";
 
@@ -221,7 +222,13 @@ export function LiveView({
               style={{ "--i": index } as React.CSSProperties}
             >
               <div className={styles.laneIdentity}>
-                <span className={styles.laneName}>{run.model.displayName}</span>
+                <span className={styles.laneName}>
+                  <span
+                    className="modelDot"
+                    style={{ "--model-color": modelColor(run.model.slug) } as React.CSSProperties}
+                  />
+                  {run.model.displayName}
+                </span>
                 <span className={styles.laneSlug}>{run.model.slug}</span>
               </div>
               <div className={styles.laneReadout}>

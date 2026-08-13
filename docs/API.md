@@ -31,6 +31,12 @@ content (code, stdout/stderr, test results) for one run. Only serves this for
 retrievable this way, that would let a later model in the same rotation see an
 earlier competitor's attempt.
 
+**Not yet built** — the challenge-detail page currently shows run summaries
+only (status, attempts, time-to-solve), not the per-attempt code/log detail
+this route is meant to serve. Noted here rather than silently left inaccurate;
+picking this up is a `ui/`-plus-`api/` pairing, not `ops/`'s to build
+unilaterally.
+
 ### `GET /api/challenges/active`
 
 Called by: the "current challenge" live view. Short-poll target (client polls
@@ -49,37 +55,62 @@ a `challenges` row with `status = 'pending'` — never `approved`, never
 
 ## Internal / operator routes
 
-Gate these behind a shared secret header (`INTERNAL_TOKEN`, checked with the
-same `timingSafeEqual` pattern used elsewhere in this codebase — do not
-string-compare) or Vercel deployment protection on a `/api/internal/*` prefix,
-decide which during `M1` and document the actual choice here once made.
+**Decided (M4, `ops/`):** a shared secret header (`INTERNAL_TOKEN`), compared
+with `crypto.timingSafeEqual` against a fixed-length hash of both sides (see
+`lib/internal/auth.ts`) — not Vercel deployment protection. Deployment
+protection on this project is already fully spent on the M2 exit criteria
+(SSO must stay off `arena-phi-three.vercel.app` so the public site is
+reachable at all); Hobby has no path-prefix-only protection mode to layer a
+second policy under that without touching the whole project's setting, so a
+header check on the route itself is what doesn't depend on account-level
+config this project doesn't have.
 
 ### `POST /api/internal/challenges/[id]/moderate`
 
 Called by: the operator, approving or rejecting a `pending` challenge.
-Transitions `pending → approved` or `pending → rejected`. Only `approved`
-challenges are eligible for rotation.
+Transitions `pending → approved` (also writing the real `test_cases` — a
+public submission always arrives with `test_cases: []`, per the submit
+route's own comment; approving without supplying real cases would produce a
+challenge the Workflow can't run) or `pending → rejected`. Only `approved`
+challenges are eligible for rotation. 409s if the challenge isn't currently
+`pending`.
+
+### `GET /api/internal/challenges/pending`
+
+Called by: `/internal/moderate`, the operator moderation page. Not originally
+listed in this document — added alongside the moderate route above, because
+nothing else exposes a pending challenge's id (pending rows are invisible
+everywhere public, on purpose) and the moderate route is unusable without a
+way to discover what's waiting.
 
 ## Cron-only routes
 
 ### `POST /api/cron/rotate-challenge`
 
-Called by: Vercel Cron, once daily, per `vercel.json`. Must verify the request
-actually came from Vercel's Cron invoker (check the documented header/secret
-Vercel Cron sends — confirm the exact mechanism in current docs during `M1`,
-don't assume it's identical to some other project's older Cron setup).
-Performs the selection + Edge Config write + Workflow trigger described in
-`docs/WORKFLOWS.md`.
+Called by: Vercel Cron, once daily, per `vercel.json`. Verifies
+`Authorization: Bearer $CRON_SECRET` — sent automatically by Vercel Cron once
+`CRON_SECRET` is set as a project env var (M3, `ops/`, confirmed against
+current Vercel Cron docs, not assumed). Performs the selection + Postgres
+update + Edge Config write + Workflow trigger described in
+`docs/WORKFLOWS.md`, honoring the `pausedModelSlugs` and `chaosMode` Flags
+(`flags.ts`) before starting the cycle.
 
-## Connect-mediated calls (not inbound routes)
+## Outbound calls (not inbound routes)
 
-Not HTTP routes this app exposes — outbound calls the Workflow makes through
-`@vercel/connect`, listed here because they're part of the same request-flow
+Not HTTP routes this app exposes — calls the Workflow makes at the end of a
+completed cycle, listed here because they're part of the same request-flow
 picture:
 
-- **Discord digest post** — fired at the end of `benchmarkChallenge()`, once
-  per completed challenge. Short-lived token requested at call time, per
-  `docs/ARCHITECTURE.md`.
+- **Discord digest post** — fired from `postDigest()`
+  (`lib/workflow/steps/digest.ts`), once per completed challenge. **Not
+  Connect-mediated** — Vercel Connect's connector types
+  (`api-key, github, linear, oauth, photon, salesforce, slack, snowflake`,
+  confirmed against the live product during M3) don't include Discord, so
+  there's no connector to request a short-lived token from. Uses a Discord
+  Incoming Webhook URL (`DISCORD_WEBHOOK_URL`) instead — see
+  `lib/ops/discord.ts` for why that's an acceptable substitute per
+  `docs/SECURITY.md`'s standing-credential concern.
 - **GitHub PR (optional, later phase)** — opens a PR with the winning
-  submission's code. Same token-scoping rule. Not in v1's critical path —
-  see `docs/ROADMAP.md`.
+  submission's code. GitHub *is* a real Connect connector type, so this one
+  can use `@vercel/connect` as originally planned when it's built. Not in
+  v1's critical path — see `docs/ROADMAP.md`.

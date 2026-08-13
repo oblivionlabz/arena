@@ -1,0 +1,383 @@
+.page {
+  padding-block: clamp(var(--s-12), 9vw, var(--s-24)) 0;
+}
+
+/* ── Masthead ──────────────────────────────────────────────────────────── */
+
+/* Asymmetric on purpose: the claim gets the width, the readout gets a narrow
+   column pinned to the baseline of the headline. */
+.masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-8);
+  padding-bottom: clamp(var(--s-12), 7vw, var(--s-16));
+}
+
+@media (min-width: 60rem) {
+  .masthead {
+    grid-template-columns: minmax(0, 7fr) minmax(14rem, 3fr);
+    align-items: end;
+    gap: var(--s-12);
+  }
+}
+
+.headline {
+  font-size: var(--text-display);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-weight: 700;
+  margin-top: var(--s-4);
+}
+
+/* Each phrase is its own block so the line break is a composition decision,
+   not whatever the column width happened to produce. */
+.headline span {
+  display: block;
+}
+
+/* Second line drops to muted — the hierarchy device on this page is weight
+   and value, not colour. */
+.headlineDim {
+  color: var(--muted);
+  /* Indented off the first line's left edge: the two halves read as one
+     sentence stepping down rather than two stacked headings. */
+  padding-left: 1.2ch;
+}
+
+.thesis {
+  margin-top: var(--s-6);
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+.readout {
+  display: grid;
+  gap: var(--s-3);
+  border-left: 1px solid var(--line-strong);
+  padding-left: var(--s-4);
+}
+
+.readoutRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  font-size: var(--text-small);
+  color: var(--muted);
+}
+
+.readoutValue {
+  color: var(--ink);
+  font-size: var(--text-lead);
+  font-weight: 700;
+}
+
+/* ── Section framing ───────────────────────────────────────────────────── */
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.sectionNote {
+  color: var(--dim);
+  font-size: var(--text-micro);
+  letter-spacing: 0.06em;
+}
+
+/* ── Standings ─────────────────────────────────────────────────────────── */
+
+.standings {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-6);
+}
+
+/* One header row instead of repeating three labels on every model. Shares the
+   row grid and box model exactly so the columns line up. Below the breakpoint
+   the stats reflow into an inline strip and carry their own labels again. */
+.columns {
+  display: none;
+}
+
+@media (min-width: 52rem) {
+  .columns {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) repeat(3, 7.5rem);
+    gap: var(--s-4);
+    border: 1px solid transparent;
+    border-left: 2px solid transparent;
+    padding: var(--s-4) var(--s-6) 0;
+  }
+
+  .chase .statLabel,
+  .pack .statLabel {
+    display: none;
+  }
+}
+
+.row {
+  position: relative;
+  display: grid;
+  align-items: center;
+  gap: var(--s-4);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-left: 2px solid transparent;
+  padding: var(--s-4) var(--s-6);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms var(--ease-out-expo);
+}
+
+.row:hover {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+  transform: translateX(2px);
+}
+
+/* Rank 1 is a different object, not a bigger row: it gets its own block,
+   the accent edge, a lifted surface, and display-scale numerals. */
+.lead {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6);
+  padding: clamp(var(--s-6), 4vw, var(--s-12));
+  background:
+    radial-gradient(
+      36rem 18rem at 0% 0%,
+      rgba(47, 123, 255, 0.09),
+      transparent 70%
+    ),
+    var(--surface-2);
+  border-left-color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--line));
+}
+
+@media (min-width: 52rem) {
+  .lead {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+}
+
+.leadIdentity {
+  display: grid;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+.leadRank {
+  font-size: var(--text-micro);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-hot);
+}
+
+.leadName {
+  font-size: var(--text-title);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.leadMeta {
+  color: var(--dim);
+  font-size: var(--text-small);
+}
+
+.leadStats {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: var(--s-6) clamp(var(--s-6), 4vw, var(--s-12));
+  align-items: end;
+}
+
+.leadStat {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.leadStatValue {
+  font-size: var(--text-numeral);
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.leadStatValue.hot {
+  color: var(--accent-hot);
+}
+
+/* Ranks 2–3: same anatomy, two thirds the presence. */
+.chase {
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  row-gap: var(--s-3);
+}
+
+@media (min-width: 52rem) {
+  .chase {
+    grid-template-columns: 2.5rem minmax(0, 1fr) repeat(3, 7.5rem);
+  }
+}
+
+.chaseName {
+  font-size: var(--text-lead);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+/* Rank 4+: compact, quiet, scannable. */
+.pack {
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  row-gap: var(--s-2);
+  padding-block: var(--s-3);
+  background: transparent;
+}
+
+@media (min-width: 52rem) {
+  .pack {
+    grid-template-columns: 2.5rem minmax(0, 1fr) repeat(3, 7.5rem);
+  }
+}
+
+.packName {
+  font-size: var(--text-body);
+  overflow-wrap: anywhere;
+}
+
+.rank {
+  color: var(--dim);
+  font-size: var(--text-small);
+  letter-spacing: 0.08em;
+}
+
+.stat {
+  display: grid;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: var(--text-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.statValue {
+  font-size: var(--text-body);
+  color: var(--ink);
+}
+
+.statValue.hot {
+  color: var(--accent-hot);
+}
+
+/* On narrow screens the three stats fold into an inline strip rather than
+   stacking into three lonely rows. */
+.statStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) var(--s-6);
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 52rem) {
+  .statStrip {
+    display: contents;
+  }
+}
+
+.idleTag {
+  font-size: var(--text-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  border: 1px solid var(--line);
+  padding: 0.15em 0.5em;
+  border-radius: 2px;
+}
+
+/* ── Empty / sparse state ──────────────────────────────────────────────── */
+
+/* Not a spinner and not a blank page: the honest reason there are no
+   standings yet, plus the roster that will produce them. */
+.empty {
+  margin-top: var(--s-6);
+  padding: clamp(var(--s-6), 4vw, var(--s-12));
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--line-strong);
+  background: var(--surface-1);
+}
+
+.emptyTitle {
+  font-size: var(--text-title);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: var(--s-3);
+}
+
+.emptyBody {
+  margin-top: var(--s-4);
+  max-width: var(--measure);
+  color: var(--muted);
+}
+
+.emptyLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: var(--s-6);
+  padding-bottom: 2px;
+  color: var(--accent-hot);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  font-size: var(--text-small);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: border-color 160ms ease;
+}
+
+.emptyLink:hover {
+  border-bottom-color: var(--accent);
+}
+
+.grid {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-6);
+}
+
+.gridRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-6);
+  padding: var(--s-4) var(--s-6);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--line-strong);
+}
+
+.gridName {
+  font-size: var(--text-lead);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+
+.gridSlug {
+  color: var(--dim);
+  font-size: var(--text-micro);
+  letter-spacing: 0.1em;
+}

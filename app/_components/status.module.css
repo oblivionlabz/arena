@@ -1,0 +1,92 @@
+/* Status is where the accent earns its keep: accent means a model is running
+   or has passed. Everything else is grey, red, or amber. */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.28em 0.7em 0.28em 0.6em;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  font-size: var(--text-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+/* passed — the one solid, filled state. Reads as "banked". */
+.passed {
+  color: var(--accent-hot);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--accent-wash);
+}
+
+/* running — same hue, hollow and breathing, so a glance distinguishes
+   "in flight" from "landed" without a second colour. */
+.running {
+  color: var(--accent-hot);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.running .dot {
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.72);
+  }
+}
+
+.failed {
+  color: var(--fail);
+  border-color: color-mix(in srgb, var(--fail) 40%, transparent);
+}
+
+.error {
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+}
+
+.queued {
+  color: var(--dim);
+}
+
+.queued .dot {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+/* Challenge-level states. `active` is the only one that gets the accent —
+   a completed challenge is history, and history is quiet. */
+.active {
+  color: var(--accent-hot);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.active .dot {
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+.completed {
+  color: var(--ink);
+}
+
+.approved {
+  color: var(--muted);
+}

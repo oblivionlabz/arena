@@ -2,10 +2,37 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { formatDuration, formatPercent } from "@/app/_lib/format";
+
+/**
+ * A format *name*, not a formatter function — this component is used from
+ * async Server Components (the leaderboard), and a function prop can't
+ * cross that boundary (React Server Components only serialize plain data
+ * across it; caught live: "Functions cannot be passed directly to Client
+ * Components" — a 500 on every page render once a challenge had settled
+ * runs, since that's the only state that reaches the percent/duration/streak
+ * call sites). The actual formatting functions are imported and called
+ * inside this client component instead, where they're just local code.
+ */
+type CountUpFormat = "integer" | "percent" | "duration" | "streak";
+
 interface CountUpProps {
   value: number;
-  formatter?: (n: number) => string;
+  format?: CountUpFormat;
   durationMs?: number;
+}
+
+function render(format: CountUpFormat, n: number): string {
+  switch (format) {
+    case "percent":
+      return formatPercent(n);
+    case "duration":
+      return formatDuration(n);
+    case "streak":
+      return `${Math.round(n)}W`;
+    case "integer":
+      return `${Math.round(n)}`;
+  }
 }
 
 /**
@@ -16,7 +43,7 @@ interface CountUpProps {
  * load, i.e. a fresh mount, never a live prop change mid-session, so this
  * only ever needs to animate once per instance, not react to updates.
  */
-export function CountUp({ value, formatter, durationMs = 900 }: CountUpProps) {
+export function CountUp({ value, format = "integer", durationMs = 900 }: CountUpProps) {
   const [display, setDisplay] = useState(value);
   const rafRef = useRef<number | undefined>(undefined);
 
@@ -46,5 +73,5 @@ export function CountUp({ value, formatter, durationMs = 900 }: CountUpProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once per mount, see comment above
   }, []);
 
-  return <>{formatter ? formatter(display) : Math.round(display)}</>;
+  return <>{render(format, display)}</>;
 }

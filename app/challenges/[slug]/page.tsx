@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { ChallengeStatusChip, RunStatusChip } from "@/app/_components/status-chip";
 import { fetchChallenge, type ChallengeDetail } from "@/app/_lib/api";
 import { formatDuration, formatUtc } from "@/app/_lib/format";
+import { modelColor } from "@/app/_lib/model-color";
 
+import { CopyPromptButton } from "./copy-prompt-button";
 import styles from "./challenge.module.css";
 
 // ISR, same 60s window as the leaderboard and the route's own cache header.
@@ -93,7 +95,10 @@ export default async function ChallengePage({
                 Sent verbatim to every model
               </span>
             </div>
-            <p className={styles.prompt}>{challenge.prompt}</p>
+            <div className={styles.promptBlock}>
+              <p className={styles.prompt}>{challenge.prompt}</p>
+              <CopyPromptButton prompt={challenge.prompt} />
+            </div>
           </section>
 
           <section style={{ marginTop: "var(--s-16)" }}>
@@ -184,7 +189,13 @@ function RunRow({
       style={{ "--i": index } as React.CSSProperties}
     >
       <div>
-        <p className={styles.runName}>{run.model.displayName}</p>
+        <p className={styles.runName}>
+          <span
+            className="modelDot"
+            style={{ "--model-color": modelColor(run.model.slug) } as React.CSSProperties}
+          />
+          {run.model.displayName}
+        </p>
         <p className={styles.runSlug}>{run.model.slug}</p>
       </div>
       <div className={styles.runReadout}>

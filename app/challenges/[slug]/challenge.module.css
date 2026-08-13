@@ -89,17 +89,46 @@
   border-bottom: 1px solid var(--line);
 }
 
+.promptBlock {
+  position: relative;
+}
+
 /* The prompt is the artifact everything else is measured against, so it gets
    the page's only quoted, indented surface. */
 .prompt {
   margin-top: var(--s-6);
   padding: clamp(var(--s-4), 3vw, var(--s-8));
+  padding-right: clamp(7rem, 12vw, 9rem);
   background: var(--surface-1);
   border-left: 2px solid var(--accent);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font-size: var(--text-lead);
   line-height: 1.6;
+}
+
+.copyButton {
+  position: absolute;
+  top: calc(var(--s-6) + clamp(var(--s-4), 3vw, var(--s-8)));
+  right: clamp(var(--s-4), 3vw, var(--s-8));
+  font: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: var(--text-micro);
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.copyButton:hover {
+  color: var(--ink);
+  border-color: var(--accent);
 }
 
 .aside {
@@ -211,10 +240,18 @@
 }
 
 .runName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
   font-size: var(--text-lead);
   font-weight: 700;
   letter-spacing: -0.015em;
   overflow-wrap: anywhere;
+}
+
+.runName .modelDot {
+  position: relative;
+  top: -0.14em;
 }
 
 .runSlug {

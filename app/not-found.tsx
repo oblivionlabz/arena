@@ -5,7 +5,7 @@ import styles from "./not-found.module.css";
 export default function NotFound() {
   return (
     <main className={`shell ${styles.page}`}>
-      <p className="eyebrow">404</p>
+      <p className={`eyebrow ${styles.flicker}`}>404 · no signal</p>
       <h1 className={styles.title}>Nothing here.</h1>
       <p className={styles.body}>
         Challenges that are still pending moderation aren&apos;t public, so a

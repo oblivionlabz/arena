@@ -13,16 +13,23 @@ import { getDb } from "@/lib/workflow/db";
 
 /**
  * `null` when there's no publicly reachable URL to build the digest's link
- * and embed image from — plain `vercel dev` doesn't inject either system env
- * var. A `localhost` fallback here previously shipped a real digest to
- * Discord with a dead link and a broken embed image (Discord's servers can't
- * fetch a URL on this machine); this deliberately returns nothing to send
- * rather than something that looks sent but is wrong. Prefers the stable
- * production alias so a Cron-triggered run's link doesn't rot the next time
- * this project redeploys; falls back to the deployment's own URL, which
- * every real Vercel deployment (preview included) always has.
+ * and embed image from.
+ *
+ * The `VERCEL_ENV === "development"` guard is load-bearing, confirmed live
+ * against a real bug: `vercel dev` sets `VERCEL_URL` too, to the *local dev
+ * server's own address* ("localhost:3011" in the session that caught this)
+ * — indistinguishable in shape from a real deployment's URL, so the
+ * previous version of this function (checking only whether the vars were
+ * *set*, not whether they were trustworthy) shipped several real digests to
+ * Discord with dead localhost links and broken embed images before this was
+ * caught. `VERCEL_ENV` is "development" only under `vercel dev`; real
+ * deployments are always "production" or "preview" — that's what actually
+ * distinguishes "this URL is a real address" from "this URL is a local
+ * dev server nothing outside this machine can reach."
  */
 function siteUrl(): string | null {
+  if (process.env.VERCEL_ENV === "development") return null;
+
   const host = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
   return host ? `https://${host}` : null;
 }

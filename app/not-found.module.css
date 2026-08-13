@@ -8,6 +8,26 @@
   padding-block: var(--s-16);
 }
 
+/* A dead readout, not a static one — the one place on the site an eyebrow
+   label is allowed to look like it's losing signal instead of reporting
+   clean data. Irregular timing (not a smooth sine) is what reads as a
+   flicker rather than a pulse. */
+.flicker {
+  animation: flicker 3.6s steps(1) infinite;
+}
+
+@keyframes flicker {
+  0%,
+  92%,
+  96% {
+    opacity: 1;
+  }
+  93%,
+  95% {
+    opacity: 0.25;
+  }
+}
+
 .title {
   font-size: var(--text-display);
   font-weight: 700;

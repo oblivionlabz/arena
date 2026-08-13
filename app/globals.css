@@ -244,16 +244,30 @@ ol {
 }
 
 .siteNav a {
+  position: relative;
   padding-block: var(--s-2);
-  border-bottom: 1px solid transparent;
-  transition:
-    color 140ms ease,
-    border-color 140ms ease;
+  transition: color 140ms ease;
+}
+
+/* Drawn in on hover, not just recolored — a scaleX transform costs nothing
+   layout-wise and reads as more deliberate than an instant color swap. */
+.siteNav a::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: var(--line-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms var(--ease-out-expo);
 }
 
 .siteNav a:hover {
   color: var(--ink);
-  border-bottom-color: var(--line-strong);
+}
+
+.siteNav a:hover::after {
+  transform: scaleX(1);
 }
 
 .siteNav a.liveLink {
@@ -263,8 +277,8 @@ ol {
   color: var(--ink);
 }
 
-.siteNav a.liveLink:hover {
-  border-bottom-color: var(--accent);
+.siteNav a.liveLink::after {
+  background: var(--accent);
 }
 
 .pulseDot {

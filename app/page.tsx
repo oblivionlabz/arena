@@ -4,7 +4,6 @@ import Link from "next/link";
 
 import { CountUp } from "@/app/_components/count-up";
 import { fetchLeaderboard, type LeaderboardModel } from "@/app/_lib/api";
-import { formatDuration, formatPercent } from "@/app/_lib/format";
 import { modelColor } from "@/app/_lib/model-color";
 
 import styles from "./page.module.css";
@@ -139,7 +138,7 @@ function LeadRow({ model }: { model: LeaderboardModel }) {
         <div className={styles.leadStat}>
           <span className={styles.statLabel}>Win rate</span>
           <span className={`${styles.leadStatValue} ${styles.hot}`}>
-            <CountUp value={model.winRate} formatter={formatPercent} />
+            <CountUp value={model.winRate} format="percent" />
           </span>
         </div>
         <div className={styles.leadStat}>
@@ -152,7 +151,7 @@ function LeadRow({ model }: { model: LeaderboardModel }) {
           <span className={styles.statLabel}>Streak</span>
           <span className={styles.leadStatValue}>
             {model.currentStreak > 0 ? (
-              <CountUp value={model.currentStreak} formatter={(n) => `${Math.round(n)}W`} />
+              <CountUp value={model.currentStreak} format="streak" />
             ) : (
               "—"
             )}
@@ -163,11 +162,10 @@ function LeadRow({ model }: { model: LeaderboardModel }) {
   );
 }
 
-/** `formatDuration` needs the real ms value, including the null case CountUp
-    can't animate through — this is the one place that difference matters. */
+/** The null case CountUp can't animate through — this is the one place that difference matters. */
 function DurationCountUp({ ms }: { ms: number | null }) {
   if (ms === null) return <>—</>;
-  return <CountUp value={ms} formatter={(n) => formatDuration(n)} />;
+  return <CountUp value={ms} format="duration" />;
 }
 
 function ChaseRow({
@@ -200,7 +198,7 @@ function ChaseRow({
         <div className={styles.stat}>
           <span className={styles.statLabel}>Win rate</span>
           <span className={`${styles.statValue} ${styles.hot}`}>
-            <CountUp value={model.winRate} formatter={formatPercent} />
+            <CountUp value={model.winRate} format="percent" />
           </span>
         </div>
         <div className={styles.stat}>
@@ -213,7 +211,7 @@ function ChaseRow({
           <span className={styles.statLabel}>Streak</span>
           <span className={styles.statValue}>
             {model.currentStreak > 0 ? (
-              <CountUp value={model.currentStreak} formatter={(n) => `${Math.round(n)}W`} />
+              <CountUp value={model.currentStreak} format="streak" />
             ) : (
               "—"
             )}

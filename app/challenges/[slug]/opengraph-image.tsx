@@ -7,6 +7,7 @@
 import { ImageResponse } from "next/og";
 
 import { fetchChallenge } from "@/app/_lib/api";
+import { modelColorHex } from "@/app/_lib/model-color";
 
 export const alt = "Arena challenge scorecard";
 export const size = { width: 1200, height: 630 };
@@ -150,7 +151,18 @@ export default async function Image({ params }: { params: Promise<{ slug: string
                 fontSize: 24,
               }}
             >
-              <span style={{ display: "flex", fontWeight: 700 }}>{run.model.displayName}</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 700 }}>
+                <span
+                  style={{
+                    display: "flex",
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: modelColorHex(run.model.slug),
+                  }}
+                />
+                {run.model.displayName}
+              </span>
               <span style={{ display: "flex", color: runAccent(run.status), fontSize: 18, letterSpacing: 2, textTransform: "uppercase" }}>
                 {run.status}
               </span>

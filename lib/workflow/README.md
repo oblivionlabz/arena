@@ -31,7 +31,8 @@ import { benchmarkChallenge } from "@/lib/workflow";
 await start(benchmarkChallenge, [challengeId]);
 ```
 
-The Cron route that calls this on a schedule is M3, owned by `ops/`.
+`app/api/cron/rotate-challenge/route.ts` (`ops/`, M3) is what actually calls
+this on a schedule.
 
 Seed a challenge and a model to run against first — see `db/README.md`.
 

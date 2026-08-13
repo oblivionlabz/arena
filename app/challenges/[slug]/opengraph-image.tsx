@@ -13,14 +13,14 @@ export const alt = "Arena challenge scorecard";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const VOID = "#0a0b0d";
+const VOID = "#08090c";
 const SURFACE = "#101218";
 const INK = "#e7eaf0";
 const MUTED = "#8890a0";
 const DIM = "#59606f";
 const LINE = "rgba(231, 234, 240, 0.14)";
-const ACCENT = "#2f7bff";
-const ACCENT_HOT = "#6ba4ff";
+const ACCENT = "#2fdb7f";
+const ACCENT_HOT = "#7cf7ae";
 const FAIL = "#c05762";
 
 const FONT_STACK = "ui-monospace, Menlo, Consolas, monospace";

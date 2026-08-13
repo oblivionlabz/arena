@@ -1,13 +1,20 @@
 /* Arena — public site design tokens and chrome.
-   Direction: dark instrument panel. One accent (electric blue) carries meaning
-   only — live, running, passed. Nothing decorative is ever accent-colored. */
+   Redesign, 2026-08-13: the instrument-panel structure stays (near-black
+   base, hairline-driven layout, status color that means something) — that
+   discipline was never the problem. What changes is the identity riding on
+   top of it: a terminal-green status accent replaces the old corporate
+   blue, a second, strictly non-status violet carries mood in the
+   background and hero only, and headings move to a real display face
+   (Space Grotesk, wired in layout.tsx) instead of setting everything in
+   the data/readout monospace. One accent still carries status meaning only
+   — live, running, passed — violet is decoration, never status. */
 
 :root {
   /* Surfaces: near-black base, three lifted planes. Never pure #000. */
-  --void: #0a0b0d;
+  --void: #08090c;
   --surface-1: #101218;
-  --surface-2: #161922;
-  --surface-3: #1d212c;
+  --surface-2: #161a20;
+  --surface-3: #1e222b;
 
   /* Hairlines do the structural work; boxes and shadows stay quiet. */
   --line: rgba(231, 234, 240, 0.07);
@@ -17,13 +24,21 @@
   --muted: #8890a0;
   --dim: #59606f;
 
-  /* The single accent. Semantic: live / running / passed. */
-  --accent: #2f7bff;
-  --accent-hot: #6ba4ff;
-  --accent-dim: #17357a;
-  --accent-wash: rgba(47, 123, 255, 0.1);
+  /* The status accent. Semantic: live / running / passed — nothing else
+     is ever colored with it. */
+  --accent: #2fdb7f;
+  --accent-hot: #7cf7ae;
+  --accent-dim: #124a2b;
+  --accent-wash: rgba(47, 219, 127, 0.12);
 
-  /* Not a second accent — failure and infrastructure-error signals, kept
+  /* Mood, not status: the redesign's second color, confined to the
+     background atmosphere and hero decoration. Never touches a run, a
+     pip, a chip, or anything else that reports state — if it starts
+     meaning something, it stops being decoration. */
+  --mood: #9d5cff;
+  --mood-hot: #c39bff;
+
+  /* Not a status accent — failure and infrastructure-error signals, kept
      desaturated so they never compete with the accent for attention. */
   --fail: #c05762;
   --warn: #bf9153;
@@ -48,12 +63,18 @@
   --text-body: 0.9375rem;
   --text-lead: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
   --text-title: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
-  /* Capped so the longest headline line still sets on one line inside the
-     masthead column — a monospace face at display size runs wide. */
-  --text-display: clamp(2.25rem, 1.1rem + 4.4vw, 4.75rem);
+  /* Space Grotesk (the display face) sets narrower than the old monospace
+     headline did at the same size, which is what buys the bigger ceiling
+     here — 4.75rem was tuned for a wide monospace face and read small
+     once headlines switched faces. */
+  --text-display: clamp(2.25rem, 1rem + 5.4vw, 5.75rem);
   --text-numeral: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Narrative headlines only — model names, stats, labels, and nav stay in
+     the monospace body stack below. Two faces, two jobs. */
+  --display-font: var(--font-display), "Helvetica Neue", Arial, sans-serif;
 }
 
 * {
@@ -79,10 +100,13 @@ body {
 }
 
 /* Atmosphere: two fixed layers, not texture sprinkled through the
-   components. ::before is the grid plus two accent blooms that drift
-   against each other — slow enough to register as "the room is breathing,"
-   not as motion competing with the content. ::after is a single grain layer
-   at its own (much lower) opacity; grain and bloom can't share one
+   components. ::before is the grid plus two blooms that drift against each
+   other — slow enough to register as "the room is breathing," not as
+   motion competing with the content. The two blooms are deliberately two
+   different hues (status accent + mood violet) rather than one color at
+   two strengths — that's the second color's only real estate on the page,
+   confined entirely to this background layer. ::after is a single grain
+   layer at its own (much lower) opacity; grain and bloom can't share one
    pseudo-element's opacity without one washing out the other. */
 body::before {
   content: "";
@@ -93,12 +117,12 @@ body::before {
   background-image:
     radial-gradient(
       58rem 34rem at 50% 50%,
-      rgba(47, 123, 255, 0.28),
+      rgba(47, 219, 127, 0.22),
       transparent 64%
     ),
     radial-gradient(
-      46rem 30rem at 50% 50%,
-      rgba(107, 164, 255, 0.14),
+      50rem 32rem at 50% 50%,
+      rgba(157, 92, 255, 0.18),
       transparent 70%
     ),
     linear-gradient(var(--line) 1px, transparent 1px),
@@ -341,13 +365,13 @@ ol {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(47, 123, 255, 0.5);
+    box-shadow: 0 0 0 0 rgba(47, 219, 127, 0.5);
   }
   70% {
-    box-shadow: 0 0 0 7px rgba(47, 123, 255, 0);
+    box-shadow: 0 0 0 7px rgba(47, 219, 127, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(47, 123, 255, 0);
+    box-shadow: 0 0 0 0 rgba(47, 219, 127, 0);
   }
 }
 

@@ -37,9 +37,10 @@
 }
 
 .title {
+  font-family: var(--display-font);
   font-size: var(--text-title);
   font-weight: 700;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.015em;
   line-height: 1.05;
   text-wrap: balance;
 }
@@ -113,13 +114,13 @@
 
 @keyframes ping {
   0% {
-    box-shadow: 0 0 0 0 rgba(47, 123, 255, 0.55);
+    box-shadow: 0 0 0 0 rgba(47, 219, 127, 0.55);
   }
   70% {
-    box-shadow: 0 0 0 6px rgba(47, 123, 255, 0);
+    box-shadow: 0 0 0 6px rgba(47, 219, 127, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(47, 123, 255, 0);
+    box-shadow: 0 0 0 0 rgba(47, 219, 127, 0);
   }
 }
 
@@ -188,7 +189,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(47, 123, 255, 0.12),
+    rgba(47, 219, 127, 0.12),
     transparent
   );
   animation: sweep 2.6s var(--ease-out-expo) infinite;
@@ -382,16 +383,17 @@
   background:
     radial-gradient(
       44rem 22rem at 0% 0%,
-      rgba(47, 123, 255, 0.05),
+      rgba(47, 219, 127, 0.05),
       transparent 70%
     ),
     var(--surface-1);
 }
 
 .panelTitle {
+  font-family: var(--display-font);
   font-size: var(--text-title);
   font-weight: 700;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.015em;
   line-height: 1.08;
   margin-top: var(--s-3);
   text-wrap: balance;

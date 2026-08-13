@@ -2,6 +2,7 @@ import { Fragment } from "react";
 
 import Link from "next/link";
 
+import { CountUp } from "@/app/_components/count-up";
 import { fetchLeaderboard, type LeaderboardModel } from "@/app/_lib/api";
 import { formatDuration, formatPercent } from "@/app/_lib/format";
 
@@ -44,11 +45,15 @@ export default async function LeaderboardPage() {
         >
           <div className={styles.readoutRow}>
             <span>Models tracked</span>
-            <span className={styles.readoutValue}>{models.length}</span>
+            <span className={styles.readoutValue}>
+              <CountUp value={models.length} />
+            </span>
           </div>
           <div className={styles.readoutRow}>
             <span>In rotation</span>
-            <span className={styles.readoutValue}>{activeCount}</span>
+            <span className={styles.readoutValue}>
+              <CountUp value={activeCount} />
+            </span>
           </div>
           <div className={styles.readoutRow}>
             <span>Rotation</span>
@@ -127,24 +132,35 @@ function LeadRow({ model }: { model: LeaderboardModel }) {
         <div className={styles.leadStat}>
           <span className={styles.statLabel}>Win rate</span>
           <span className={`${styles.leadStatValue} ${styles.hot}`}>
-            {formatPercent(model.winRate)}
+            <CountUp value={model.winRate} formatter={formatPercent} />
           </span>
         </div>
         <div className={styles.leadStat}>
           <span className={styles.statLabel}>Avg solve</span>
           <span className={styles.leadStatValue}>
-            {formatDuration(model.avgTimeToSolveMs)}
+            <DurationCountUp ms={model.avgTimeToSolveMs} />
           </span>
         </div>
         <div className={styles.leadStat}>
           <span className={styles.statLabel}>Streak</span>
           <span className={styles.leadStatValue}>
-            {model.currentStreak > 0 ? `${model.currentStreak}W` : "—"}
+            {model.currentStreak > 0 ? (
+              <CountUp value={model.currentStreak} formatter={(n) => `${Math.round(n)}W`} />
+            ) : (
+              "—"
+            )}
           </span>
         </div>
       </div>
     </article>
   );
+}
+
+/** `formatDuration` needs the real ms value, including the null case CountUp
+    can't animate through — this is the one place that difference matters. */
+function DurationCountUp({ ms }: { ms: number | null }) {
+  if (ms === null) return <>—</>;
+  return <CountUp value={ms} formatter={(n) => formatDuration(n)} />;
 }
 
 function ChaseRow({
@@ -171,19 +187,23 @@ function ChaseRow({
         <div className={styles.stat}>
           <span className={styles.statLabel}>Win rate</span>
           <span className={`${styles.statValue} ${styles.hot}`}>
-            {formatPercent(model.winRate)}
+            <CountUp value={model.winRate} formatter={formatPercent} />
           </span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statLabel}>Avg solve</span>
           <span className={styles.statValue}>
-            {formatDuration(model.avgTimeToSolveMs)}
+            <DurationCountUp ms={model.avgTimeToSolveMs} />
           </span>
         </div>
         <div className={styles.stat}>
           <span className={styles.statLabel}>Streak</span>
           <span className={styles.statValue}>
-            {model.currentStreak > 0 ? `${model.currentStreak}W` : "—"}
+            {model.currentStreak > 0 ? (
+              <CountUp value={model.currentStreak} formatter={(n) => `${Math.round(n)}W`} />
+            ) : (
+              "—"
+            )}
           </span>
         </div>
       </div>

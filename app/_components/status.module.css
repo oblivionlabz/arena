@@ -23,11 +23,37 @@
   flex: none;
 }
 
-/* passed — the one solid, filled state. Reads as "banked". */
+/* passed — the one solid, filled state. Reads as "banked". The ring is a
+   one-shot confirmation, not a loop: it plays because the element mounts
+   fresh the instant a run flips to passed (live-view.tsx keys the wrapper
+   on status), never again after. */
 .passed {
+  position: relative;
   color: var(--accent-hot);
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   background: var(--accent-wash);
+}
+
+.passed::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: pass-ring 750ms var(--ease-out-expo) 100ms both;
+  pointer-events: none;
+}
+
+@keyframes pass-ring {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.88);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
 }
 
 /* running — same hue, hollow and breathing, so a glance distinguishes

@@ -78,24 +78,76 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Atmosphere: one fixed layer, not texture sprinkled through the components.
-   A faint grid plus a single accent bloom anchored behind the masthead. */
+/* Atmosphere: two fixed layers, not texture sprinkled through the
+   components. ::before is the grid plus two accent blooms that drift
+   against each other — slow enough to register as "the room is breathing,"
+   not as motion competing with the content. ::after is a single grain layer
+   at its own (much lower) opacity; grain and bloom can't share one
+   pseudo-element's opacity without one washing out the other. */
 body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    radial-gradient(
+      58rem 34rem at 50% 50%,
+      rgba(47, 123, 255, 0.22),
+      transparent 64%
+    ),
+    radial-gradient(
+      46rem 30rem at 50% 50%,
+      rgba(107, 164, 255, 0.1),
+      transparent 70%
+    ),
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:
+    120% 120%,
+    140% 140%,
+    100% 4.5rem,
+    4.5rem 100%;
+  background-position:
+    18% -6%,
+    82% 58%,
+    0 0,
+    0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  opacity: 0.55;
+  mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 92%);
+  animation: atmosphere-drift 38s var(--ease-out-expo) infinite alternate;
+}
+
+@keyframes atmosphere-drift {
+  from {
+    background-position:
+      18% -6%,
+      82% 58%,
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      25% 3%,
+      75% 50%,
+      0 0,
+      0 0;
+  }
+}
+
+/* Grain: a static SVG turbulence tile, low-opacity enough to read as texture
+   on the surfaces rather than as visible noise on its own. */
+body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(
-      58rem 34rem at 18% -6%,
-      rgba(47, 123, 255, 0.2),
-      transparent 64%
-    ),
-    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 4.5rem,
-    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 4.5rem 100%;
-  opacity: 0.55;
-  mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 92%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.025;
+  mix-blend-mode: overlay;
 }
 
 a {

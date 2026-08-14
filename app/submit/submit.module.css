@@ -32,11 +32,33 @@
   display: grid;
   gap: var(--s-8);
   padding-top: clamp(var(--s-8), 6vw, var(--s-12));
+  counter-reset: field;
 }
 
 .field {
+  position: relative;
   display: grid;
   gap: var(--s-2);
+  counter-increment: field;
+}
+
+/* Rank 01 on the homepage, field 01 here — the same instrument-panel
+   numbering language carried into the one form on the site, on wide
+   viewports where there's a gutter to put it in. */
+@media (min-width: 46rem) {
+  .field {
+    padding-left: var(--s-8);
+  }
+
+  .field::before {
+    content: counter(field, decimal-leading-zero);
+    position: absolute;
+    top: 0.05em;
+    left: 0;
+    font-size: var(--text-micro);
+    letter-spacing: 0.06em;
+    color: var(--dim);
+  }
 }
 
 .fieldHead {
@@ -165,12 +187,20 @@
   transition:
     background 140ms ease,
     border-color 140ms ease,
-    opacity 140ms ease;
+    opacity 140ms ease,
+    box-shadow 140ms ease,
+    transform 100ms ease;
 }
 
 .submit:hover:not(:disabled) {
   background: var(--accent-hot);
   border-color: var(--accent-hot);
+  box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.submit:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .submit:disabled {
@@ -211,13 +241,16 @@
   padding: clamp(var(--s-6), 5vw, var(--s-12));
   border: 1px solid var(--line);
   border-left: 2px solid var(--accent);
+  /* var(--surface-floating), not --surface-1 — see live.module.css's
+     .panel for why this stays explicit rather than deferring to
+     globals.css's `.floating`. */
   background:
     radial-gradient(
       44rem 22rem at 0% 0%,
-      rgba(47, 219, 127, 0.07),
+      rgba(47, 219, 127, 0.09),
       transparent 70%
     ),
-    var(--surface-1);
+    var(--surface-floating);
 }
 
 .panelTitle {

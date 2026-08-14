@@ -97,15 +97,35 @@
 /* The prompt is the artifact everything else is measured against, so it gets
    the page's only quoted, indented surface. */
 .prompt {
+  position: relative;
   margin-top: var(--s-6);
   padding: clamp(var(--s-4), 3vw, var(--s-8));
   padding-right: clamp(7rem, 12vw, 9rem);
   background: var(--surface-1);
   border-left: 2px solid var(--accent);
+  box-shadow: var(--shadow-lift);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font-size: var(--text-lead);
   line-height: 1.6;
+}
+
+/* A quoted artifact, not a text box — the prompt is what every model was
+   actually measured against, so it gets typographic character the rest of
+   the page's plain paragraphs don't. Sits behind the text (z-index below
+   the pre-wrap content, which establishes its own stacking via position:
+   relative on the character itself isn't needed — this is decoration only,
+   never selectable, never read by assistive tech). */
+.prompt::before {
+  content: "“";
+  position: absolute;
+  top: -0.1em;
+  left: clamp(var(--s-2), 2vw, var(--s-4));
+  font-family: var(--display-font);
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--line-strong);
+  pointer-events: none;
 }
 
 .copyButton {
@@ -140,7 +160,10 @@
 .card {
   padding: var(--s-6);
   border: 1px solid var(--line);
-  background: var(--surface-1);
+  /* var(--surface-raised), not --surface-1 — this element carries the
+     `raised` utility class; set explicitly here so the winning background
+     doesn't depend on stylesheet load order against globals.css. */
+  background: var(--surface-raised);
 }
 
 /* Explanatory copy, not a data readout — so it isn't a second identical box.
@@ -199,45 +222,47 @@
 
 /* ── Runs ──────────────────────────────────────────────────────────────── */
 
+/* One ledger surface (see globals.css .ledger) instead of a bordered box
+   per run — status still reads at a glance via a left-edge tick, not a
+   full colored border around a separate card. */
 .runs {
-  display: grid;
-  gap: var(--s-2);
   margin-top: var(--s-6);
 }
 
 .run {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--s-3) var(--s-4);
   padding: var(--s-4) var(--s-6);
-  background: var(--surface-1);
-  border: 1px solid var(--line);
-  border-left: 2px solid var(--line);
-  transition:
-    border-color 160ms ease,
-    background 160ms ease;
+  transition: background 160ms ease;
 }
 
 .run:hover {
   background: var(--surface-2);
-  border-color: var(--line-strong);
 }
 
-.run.passed {
-  border-left-color: var(--accent);
+.run::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 3px;
+  background: transparent;
 }
 
-.run.failed {
-  border-left-color: var(--fail);
+.run.passed::before,
+.run.running::before {
+  background: var(--accent);
 }
 
-.run.error {
-  border-left-color: var(--warn);
+.run.failed::before {
+  background: var(--fail);
 }
 
-.run.running {
-  border-left-color: var(--accent);
+.run.error::before {
+  background: var(--warn);
 }
 
 .runName {
@@ -306,7 +331,9 @@
   padding: clamp(var(--s-6), 4vw, var(--s-12));
   border: 1px solid var(--line);
   border-left: 2px solid var(--line-strong);
-  background: var(--surface-1);
+  /* var(--surface-floating), not --surface-1 — carries the `floating`
+     utility class; explicit for the same reason as .card above. */
+  background: var(--surface-floating);
   color: var(--muted);
   max-width: var(--measure);
 }

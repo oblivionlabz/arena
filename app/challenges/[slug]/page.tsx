@@ -109,7 +109,7 @@ export default async function ChallengePage({
               </span>
             </div>
             {runs.length === 0 ? (
-              <div className={styles.empty}>
+              <div className={`${styles.empty} floating`}>
                 <p className={styles.emptyTitle}>No model has attempted this yet.</p>
                 <p>
                   This challenge is approved and waiting its turn in the daily
@@ -117,17 +117,17 @@ export default async function ChallengePage({
                 </p>
               </div>
             ) : (
-              <ul className={styles.runs}>
+              <ol className={`${styles.runs} ledger raised`}>
                 {runs.map((run, index) => (
                   <RunRow key={run.id} run={run} index={index} />
                 ))}
-              </ul>
+              </ol>
             )}
           </section>
         </div>
 
         <aside className={styles.aside}>
-          <div className={styles.card}>
+          <div className={`${styles.card} raised`}>
             <p className="eyebrow">Test cases</p>
             <p className={styles.cardValue}>{challenge.testCaseCount}</p>
             {challenge.testCases ? (
@@ -185,7 +185,7 @@ function RunRow({
 }) {
   return (
     <li
-      className={`${styles.run} ${styles[run.status]} rise`}
+      className={`${styles.run} ${styles[run.status]} ledgerRow rise`}
       style={{ "--i": index } as React.CSSProperties}
     >
       <div>

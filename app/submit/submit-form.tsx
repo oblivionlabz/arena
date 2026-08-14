@@ -92,7 +92,7 @@ export function SubmitForm() {
 
   if (status === "success" && slug) {
     return (
-      <div className={`${styles.panel} rise`}>
+      <div className={`${styles.panel} floating rise`}>
         <p className="eyebrow">Submitted</p>
         <h2 className={styles.panelTitle}>In the moderation queue.</h2>
         <p className={styles.panelBody}>

@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-
 import Link from "next/link";
 
 import { CountUp } from "@/app/_components/count-up";
@@ -105,42 +103,49 @@ function Signalband() {
 }
 
 function Standings({ models }: { models: LeaderboardModel[] }) {
+  const [leader, ...rest] = models;
+
   return (
-    <ol className={styles.standings}>
-      {models.map((model, index) => (
-        <Fragment key={model.slug}>
-          {/* Column headers sit below the leader, not above it: the leader is
-              its own object with its own labels, and the rows beneath it are
-              the table that needs a header. */}
-          {index === 1 && (
-            <li className={styles.columns} aria-hidden="true">
-              <span />
-              <span />
-              <span className={styles.statLabel}>Win rate</span>
-              <span className={styles.statLabel}>Avg solve</span>
-              <span className={styles.statLabel}>Streak</span>
-            </li>
-          )}
-          <li className="rise" style={{ "--i": index } as React.CSSProperties}>
-            {index === 0 ? (
-              <LeadRow model={model} />
-            ) : (
+    <div className={styles.board}>
+      {/* The leader is a distinct object, not the biggest row in a list: it
+          floats above the ledger on real elevation, overlapping its top
+          edge, so rank 1 reads as raised off the plane the rest of the
+          field sits on rather than just bigger text in the same box. */}
+      <div className={`${styles.leaderSlot} rise`}>
+        <LeadRow model={leader} />
+      </div>
+
+      {rest.length > 0 && (
+        <ol className={`${styles.ledgerWrap} ledger raised`}>
+          <li className={styles.columns} aria-hidden="true">
+            <span />
+            <span />
+            <span className={styles.statLabel}>Win rate</span>
+            <span className={styles.statLabel}>Avg solve</span>
+            <span className={styles.statLabel}>Streak</span>
+          </li>
+          {rest.map((model, index) => (
+            <li
+              key={model.slug}
+              className={`${styles.ledgerLine} ledgerRow rise`}
+              style={{ "--i": index + 1 } as React.CSSProperties}
+            >
               <ChaseRow
                 model={model}
-                rank={index + 1}
-                tier={index < 3 ? "chase" : "pack"}
+                rank={index + 2}
+                tier={index < 2 ? "chase" : "pack"}
               />
-            )}
-          </li>
-        </Fragment>
-      ))}
-    </ol>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
   );
 }
 
 function LeadRow({ model }: { model: LeaderboardModel }) {
   return (
-    <article className={`${styles.row} ${styles.lead}`}>
+    <article className={`${styles.leadCard} floating`}>
       <div className={styles.leadIdentity}>
         <p className={styles.leadRank}>Rank 01</p>
         <h3 className={styles.leadName}>
@@ -201,7 +206,7 @@ function ChaseRow({
   const nameClass = tier === "chase" ? styles.chaseName : styles.packName;
 
   return (
-    <article className={`${styles.row} ${styles[tier]}`}>
+    <div className={styles[tier]}>
       <span className={styles.rank}>{rank.toString().padStart(2, "0")}</span>
       <div>
         <h3 className={nameClass}>
@@ -239,14 +244,14 @@ function ChaseRow({
           </span>
         </div>
       </div>
-    </article>
+    </div>
   );
 }
 
 function StartingGrid({ models }: { models: LeaderboardModel[] }) {
   return (
-    <>
-      <div className={`${styles.empty} rise`}>
+    <div className={styles.startingBoard}>
+      <div className={`${styles.empty} floating rise`}>
         <p className="eyebrow">No settled results</p>
         <h3 className={styles.emptyTitle}>No challenge has completed yet.</h3>
         <p className={styles.emptyBody}>
@@ -261,30 +266,28 @@ function StartingGrid({ models }: { models: LeaderboardModel[] }) {
       </div>
 
       {models.length > 0 && (
-        <ul className={styles.grid}>
+        <ol className={`${styles.rosterWrap} ledger raised`}>
           {models.map((model, index) => (
             <li
               key={model.slug}
-              className={`${styles.gridRow} rise`}
+              className={`${styles.rosterLine} ledgerRow rise`}
               style={{ "--i": index + 1 } as React.CSSProperties}
             >
-              <div>
-                <h3 className={styles.gridName}>
-                  <span
-                    className="modelDot"
-                    style={{ "--model-color": modelColor(model.slug) } as React.CSSProperties}
-                  />
-                  {model.displayName}
-                </h3>
-                <p className={styles.gridSlug}>{model.slug}</p>
-              </div>
+              <h3 className={styles.gridName}>
+                <span
+                  className="modelDot"
+                  style={{ "--model-color": modelColor(model.slug) } as React.CSSProperties}
+                />
+                {model.displayName}
+              </h3>
+              <p className={styles.gridSlug}>{model.slug}</p>
               <span className={styles.idleTag}>
                 {model.active ? "in rotation" : "out of rotation"}
               </span>
             </li>
           ))}
-        </ul>
+        </ol>
       )}
-    </>
+    </div>
   );
 }

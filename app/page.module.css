@@ -150,15 +150,64 @@
 
 /* ── Standings ─────────────────────────────────────────────────────────── */
 
-.standings {
-  display: grid;
-  gap: var(--s-3);
+/* The leader floats above the field on real elevation and overlaps the
+   ledger's top edge — depth through overlap, not just a bigger box in the
+   same stack. isolation keeps the overlap's z-index scoped to this board. */
+.board {
   padding-top: var(--s-6);
+  isolation: isolate;
+}
+
+.leaderSlot {
+  position: relative;
+  z-index: 2;
+  /* -3rem, not the -1.25rem this started at — at leadCard's actual height
+     the smaller offset read as a rounding error, not a deliberate overlap.
+     This is large enough that the card visibly sits on top of the ledger's
+     top edge rather than merely nudging it. */
+  margin-bottom: calc(-1 * var(--s-12));
+}
+
+/* Rank 1 is a different object, not a bigger row: its own block, the accent
+   edge, a lifted surface well off the flat ledger plane, and display-scale
+   numerals. */
+.leadCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6);
+  padding: clamp(var(--s-6), 4vw, var(--s-12));
+  /* Explicit here rather than left to `.floating` (also applied on this
+     element) — this element's own stylesheet vs. globals.css means the
+     cascade order between the two isn't guaranteed, and the gradient wash
+     only makes sense composed with this exact surface tone. */
+  background:
+    radial-gradient(
+      36rem 18rem at 0% 0%,
+      rgba(47, 219, 127, 0.12),
+      transparent 70%
+    ),
+    var(--surface-floating);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-left: 2px solid var(--accent);
+}
+
+@media (min-width: 52rem) {
+  .leadCard {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+}
+
+/* The ledger: one bordered surface (see globals.css .ledger), padded down
+   below the leader's overlap so its own top border stays clear of it. */
+.ledgerWrap {
+  padding-top: calc(var(--s-12) + var(--s-6));
 }
 
 /* One header row instead of repeating three labels on every model. Shares the
-   row grid and box model exactly so the columns line up. Below the breakpoint
-   the stats reflow into an inline strip and carry their own labels again. */
+   ledger row's grid so the columns line up. Below the breakpoint the stats
+   reflow into an inline strip and carry their own labels again. */
 .columns {
   display: none;
 }
@@ -168,9 +217,7 @@
     display: grid;
     grid-template-columns: 2.5rem minmax(0, 1fr) repeat(3, 7.5rem);
     gap: var(--s-4);
-    border: 1px solid transparent;
-    border-left: 2px solid transparent;
-    padding: var(--s-4) var(--s-6) 0;
+    padding: 0 var(--s-6) var(--s-3);
   }
 
   .chase .statLabel,
@@ -179,49 +226,27 @@
   }
 }
 
-.row {
-  position: relative;
-  display: grid;
-  align-items: center;
-  gap: var(--s-4);
-  background: var(--surface-1);
-  border: 1px solid var(--line);
-  border-left: 2px solid transparent;
-  padding: var(--s-4) var(--s-6);
+/* A ledger line carries no border or background of its own — the ledger
+   surface and the hairline between rows do that work now. The line itself
+   only adds the padding and the hover cue. */
+.ledgerLine {
+  padding-inline: var(--s-6);
   transition:
-    border-color 160ms ease,
     background 160ms ease,
     transform 160ms var(--ease-out-expo);
 }
 
-.row:hover {
+.ledgerLine:hover {
   background: var(--surface-2);
-  border-color: var(--line-strong);
   transform: translateX(2px);
 }
 
-/* Rank 1 is a different object, not a bigger row: it gets its own block,
-   the accent edge, a lifted surface, and display-scale numerals. */
-.lead {
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--s-6);
-  padding: clamp(var(--s-6), 4vw, var(--s-12));
-  background:
-    radial-gradient(
-      36rem 18rem at 0% 0%,
-      rgba(47, 219, 127, 0.09),
-      transparent 70%
-    ),
-    var(--surface-2);
-  border-left-color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 22%, var(--line));
-}
-
-@media (min-width: 52rem) {
-  .lead {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-  }
+.chase,
+.pack {
+  position: relative;
+  display: grid;
+  align-items: center;
+  gap: var(--s-4);
 }
 
 .leadIdentity {
@@ -283,10 +308,13 @@
   color: var(--accent-hot);
 }
 
-/* Ranks 2–3: same anatomy, two thirds the presence. */
+/* Ranks 2–3: same anatomy, two thirds the presence. Deliberately roomier
+   than the pack below it — the non-uniform rhythm is the rank signal, not
+   a border. */
 .chase {
   grid-template-columns: 2.5rem minmax(0, 1fr);
   row-gap: var(--s-3);
+  padding-block: var(--s-4);
 }
 
 @media (min-width: 52rem) {
@@ -305,12 +333,12 @@
   overflow-wrap: anywhere;
 }
 
-/* Rank 4+: compact, quiet, scannable. */
+/* Rank 4+: compact, quiet, scannable — the pack tightens up rather than
+   repeating the chase row's anatomy at the same scale. */
 .pack {
   grid-template-columns: 2.5rem minmax(0, 1fr);
   row-gap: var(--s-2);
-  padding-block: var(--s-3);
-  background: transparent;
+  padding-block: var(--s-2);
 }
 
 @media (min-width: 52rem) {
@@ -382,13 +410,21 @@
 /* ── Empty / sparse state ──────────────────────────────────────────────── */
 
 /* Not a spinner and not a blank page: the honest reason there are no
-   standings yet, plus the roster that will produce them. */
+   standings yet, plus the roster that will produce them. Raised above the
+   roster ledger below it (see .rosterWrap) — the explanation outranks the
+   list it's explaining. */
 .empty {
+  position: relative;
+  z-index: 2;
   margin-top: var(--s-6);
   padding: clamp(var(--s-6), 4vw, var(--s-12));
   border: 1px solid var(--line);
   border-left: 2px solid var(--line-strong);
-  background: var(--surface-1);
+  /* var(--surface-floating), not --surface-2 — carries the `floating`
+     utility class; explicit so the winning background doesn't depend on
+     stylesheet load order against globals.css (see .leadCard above for
+     the same reasoning). */
+  background: var(--surface-floating);
 }
 
 .emptyTitle {
@@ -424,31 +460,38 @@
   border-bottom-color: var(--accent);
 }
 
-.grid {
-  display: grid;
-  gap: var(--s-3);
-  padding-top: var(--s-6);
+/* The empty state and the roster it explains are two different objects —
+   the explanation floats as a raised card, the roster sits as a flat ledger
+   beneath it. Same overlap language as the settled-standings leader/ledger
+   pair above, so the two states of this page read as one system. */
+.startingBoard {
+  position: relative;
+  isolation: isolate;
 }
 
-.gridRow {
+.rosterWrap {
+  /* Matches .leaderSlot's overlap depth (-s-12, not the original -s-6) so
+     both content states of this page — settled standings and the empty
+     starting grid — read as the same overlap language at the same
+     visible strength. */
+  margin-top: calc(-1 * var(--s-12));
+  padding-top: calc(var(--s-12) + var(--s-3));
+}
+
+.rosterLine {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--s-3) var(--s-6);
   padding: var(--s-4) var(--s-6);
-  background: var(--surface-1);
-  border: 1px solid var(--line);
-  border-left: 2px solid var(--line-strong);
   transition:
-    border-color 160ms ease,
     background 160ms ease,
     transform 160ms var(--ease-out-expo);
 }
 
-.gridRow:hover {
+.rosterLine:hover {
   background: var(--surface-2);
-  border-color: var(--line-strong);
   transform: translateX(2px);
 }
 

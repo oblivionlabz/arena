@@ -16,6 +16,16 @@
   --surface-2: #161a20;
   --surface-3: #1e222b;
 
+  /* Elevation-specific surfaces, visibly lighter than the flat-plane
+     surfaces above. Load-bearing, not decorative: a drop shadow rendered
+     in rgba(0,0,0,...) is close to invisible against a void this dark —
+     the actual "this is raised" signal on this palette has to come from
+     the surface itself reading lighter, with the shadow only grounding
+     its edge. Confirmed live: --surface-1/2 alone under --shadow-lift
+     read as "a slightly different gray box," not "elevated." */
+  --surface-raised: #20242e;
+  --surface-floating: #262b37;
+
   /* Hairlines do the structural work; boxes and shadows stay quiet. */
   --line: rgba(231, 234, 240, 0.07);
   --line-strong: rgba(231, 234, 240, 0.16);
@@ -69,6 +79,20 @@
      once headlines switched faces. */
   --text-display: clamp(2.25rem, 1rem + 5.4vw, 5.75rem);
   --text-numeral: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
+
+  /* Real elevation, used sparingly — one lifted surface per section, not a
+     shadow under every box. Neutral (no accent tint) so "this is raised"
+     reads as hierarchy independent of status color; status color is what
+     the accent border/tick still carries. Each is two parts: an inset
+     highlight along the top edge (light catching the raised surface —
+     this is the part that actually reads on a near-black background) plus
+     a drop shadow underneath for grounding. */
+  --shadow-lift:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 1px rgba(0, 0, 0, 0.35),
+    0 14px 30px -10px rgba(0, 0, 0, 0.75);
+  --shadow-float:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 2px 2px rgba(0, 0, 0, 0.4),
+    0 32px 64px -16px rgba(0, 0, 0, 0.82);
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -230,6 +254,57 @@ ol {
   border-radius: 50%;
   background: var(--model-color, var(--dim));
   flex: none;
+}
+
+/* The redesign's actual structural fix, 2026-08-13: every list on the site
+   (standings, live lanes, run history) used to repeat the same bordered box
+   per row — recolor the border and it was still the same box. A ledger is
+   one bordered surface holding hairline-divided rows; individual rows only
+   earn their own elevation when something about that row is genuinely
+   different (a leader, a run actually in flight). Global, like .modelDot,
+   because standings/live/challenge-detail all need the identical surface
+   with page-specific row content composed on top. */
+.ledger {
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+}
+
+.ledgerRow {
+  border-bottom: 1px solid var(--line);
+}
+
+.ledgerRow:last-child {
+  border-bottom: none;
+}
+
+/* Lifted off the page's flat plane — reserved for the one element per
+   section that earns it: a leader, an explanatory empty state, a raised
+   aside. Shadow is neutral (no accent tint); status color still comes from
+   the accent border/tick, never from elevation itself. Sets `background`
+   itself rather than leaning on a component class's own fill — verified
+   live that a shadow alone, on this palette's --surface-1/2, reads as
+   "different gray box" rather than "raised." The compound `.ledger.raised`
+   rule below exists because `.ledger` also sets `background`; without it,
+   whichever stylesheet happens to load second wins that property, which
+   isn't a bet worth making. */
+.raised {
+  background: var(--surface-raised);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+.ledger.raised {
+  background: var(--surface-raised);
+}
+
+.floating {
+  background: var(--surface-floating);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-float);
+}
+
+.ledger.floating {
+  background: var(--surface-floating);
 }
 
 /* Section labels: small, wide-tracked, the connective tissue of the layout.

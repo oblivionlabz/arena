@@ -132,7 +132,7 @@ export function LiveView({
           onRecheck={load}
           label={failing ? "connection lost" : "standing by · 30s"}
         />
-        <section className={styles.panel}>
+        <section className={`${styles.panel} floating`}>
           <p className="eyebrow">Nothing on the grid</p>
           <h2 className={styles.panelTitle}>No challenge is running.</h2>
           <p className={styles.panelBody}>
@@ -217,7 +217,7 @@ export function LiveView({
       )}
 
       {runs.length === 0 ? (
-        <section className={styles.panel}>
+        <section className={`${styles.panel} floating`}>
           <p className="eyebrow">Grid forming</p>
           <h2 className={styles.panelTitle}>
             The challenge is live, but no model has been dispatched yet.
@@ -227,11 +227,11 @@ export function LiveView({
           </p>
         </section>
       ) : (
-        <ul className={styles.lanes}>
+        <ol className={`${styles.lanes} ledger raised`}>
           {runs.map((run, index) => (
             <li
               key={run.id}
-              className={`${styles.lane} ${styles[run.status]} rise`}
+              className={`${styles.lane} ${styles[run.status]} ledgerRow rise`}
               style={{ "--i": index } as React.CSSProperties}
             >
               <div className={styles.laneIdentity}>
@@ -273,7 +273,7 @@ export function LiveView({
               </div>
             </li>
           ))}
-        </ul>
+        </ol>
       )}
     </>
   );

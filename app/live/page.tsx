@@ -23,7 +23,7 @@ export default async function LivePage() {
     // not "no challenge running" — say which one it is.
     return (
       <main className={`shell ${styles.page}`}>
-        <section className={`${styles.panel} ${styles.alarm}`}>
+        <section className={`${styles.panel} ${styles.alarm} floating`}>
           <p className="eyebrow">Live view unavailable</p>
           <h1 className={styles.panelTitle}>
             The current-challenge feed isn&apos;t answering.

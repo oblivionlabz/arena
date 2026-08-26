@@ -31,7 +31,7 @@ function unauthorized() {
 
 export async function GET(request: Request) {
   // Vercel Cron invokes with GET and sends this header automatically once
-  // CRON_SECRET is set as a project env var — docs/DEVELOPMENT.md's current
+  // CRON_SECRET is set as a project env var — docs/API.md's current
   // Vercel Cron docs check, done during this route's own build.
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
